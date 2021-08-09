@@ -32,7 +32,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="subscriber">The subscriber object</param>
         /// <returns>The status</returns>
         [HttpPost("add")]
-        public ActionResult<string> AddSubscriber([FromForm] Subscriber subscriber) {
+        public ActionResult<string> AddSubscriber(Subscriber subscriber) {
             if (_subscriberRepository.Get(subscriber.Email) != null) {
                 return BadRequest("Already exists");
             }
@@ -66,6 +66,25 @@ namespace DnaVastgoed.Controllers {
             _subscriberRepository.SaveChanges();
 
             return Ok($"Removed subscriber: ${subscriber.Email}");
+        }
+
+        /// <summary>
+        /// Add a new subscriber to the email list using the webhook.
+        /// </summary>
+        /// <param name="subscriber">The subscriber object</param>
+        /// <returns>The status</returns>
+        [HttpGet("webhook")]
+        public IActionResult WebhookAddSubscriber([FromQuery] Subscriber subscriber) {
+            if (_subscriberRepository.Get(subscriber.Email) != null) {
+                return BadRequest("Already exists");
+            }
+
+            subscriber.Suppressed = null;
+
+            _subscriberRepository.Add(subscriber);
+            _subscriberRepository.SaveChanges();
+
+            return Redirect("https://dnavastgoed.be/");
         }
     }
 }
