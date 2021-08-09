@@ -84,7 +84,7 @@ namespace DnaVastgoed.Controllers {
             _subscriberRepository.Add(subscriber);
             _subscriberRepository.SaveChanges();
 
-            return Redirect("https://dnavastgoed.be/");
+            return Redirect("https://dnavastgoed.be/hou-mij-op-de-hoogte-success");
         }
     }
 }
