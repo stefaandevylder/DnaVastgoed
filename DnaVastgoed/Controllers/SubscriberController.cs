@@ -32,7 +32,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="subscriber">The subscriber object</param>
         /// <returns>The status</returns>
         [HttpPost("add")]
-        public ActionResult<string> AddSubscriber(Subscriber subscriber) {
+        public ActionResult<string> AddSubscriber([FromForm] Subscriber subscriber) {
             if (_subscriberRepository.Get(subscriber.Email) != null) {
                 return BadRequest("Already exists");
             }
