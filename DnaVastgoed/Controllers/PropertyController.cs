@@ -159,7 +159,7 @@ namespace DnaVastgoed.Controllers {
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("resetstatus")]
         public ActionResult<IEnumerable<string>> ResetStatuses(string immovlanPassword) {
-            if (immovlanPassword != Configuration["SoftwarePassword"])
+            if (immovlanPassword != Configuration["ImmoVlan:SoftwarePassword"])
                 return BadRequest("Not correct password.");
             
             ICollection<string> logs = new List<string>();
