@@ -98,7 +98,7 @@ namespace DnaVastgoed.Controllers {
                     property.UploadToImmovlan = false;
 
                     var result = new ImmoVlanProperty(property).Publish(immovlanClient);
-                    logs.Add($"UPLOADED: {property.Name} with result {result.Content}");
+                    logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
                 }
             }
 
@@ -155,12 +155,12 @@ namespace DnaVastgoed.Controllers {
         /// <summary>
         /// Reset all statuses to upload to immovlan.
         /// </summary>
-        /// <param name="immovlanPassword">The software password of immovlan</param>
+        /// <param name="apiKey">The API admin key</param>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("resetstatus")]
-        public ActionResult<IEnumerable<string>> ResetStatuses(string immovlanPassword) {
-            if (immovlanPassword != Configuration["ImmoVlan:SoftwarePassword"])
-                return BadRequest("Not correct password.");
+        public ActionResult<IEnumerable<string>> ResetStatuses(string apiKey) {
+            if (apiKey != Configuration["ApiKey"])
+                return BadRequest("API key does not exist.");
             
             ICollection<string> logs = new List<string>();
 

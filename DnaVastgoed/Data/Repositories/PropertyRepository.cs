@@ -29,7 +29,7 @@ namespace DnaVastgoed.Data.Repositories {
         /// </summary>
         /// <returns>An enumerable of all properties</returns>
         public IEnumerable<DnaProperty> GetAll() {
-            return _properties.ToList();
+            return _properties.Include(p => p.Images);
         }
 
         /// <summary>
