@@ -153,6 +153,28 @@ namespace DnaVastgoed.Controllers {
         }
 
         /// <summary>
+        /// Reset all statuses to upload to immovlan.
+        /// </summary>
+        /// <param name="immovlanPassword">The software password of immovlan</param>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("resetstatus")]
+        public ActionResult<IEnumerable<string>> ResetStatuses(string immovlanPassword) {
+            if (immovlanPassword != Configuration["SoftwarePassword"])
+                return BadRequest("Not correct password.");
+            
+            ICollection<string> logs = new List<string>();
+
+            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+                property.UploadToImmovlan = true;
+                logs.Add($"Status reset for {property.Name}");
+            }
+
+            _propertyRepository.SaveChanges();
+
+            return Ok(logs);
+        }
+
+        /// <summary>
         /// First we need to parse all possible properties 
         /// from our wordpress Homeo theme. This uses
         /// the BASE URL (wordpress json) and just retreives all
