@@ -48,6 +48,15 @@ namespace DnaVastgoed.Network {
         }
 
         /// <summary>
+        /// Suspend an Immovlan property.
+        /// </summary>
+        /// <param name="client">The Immovlan client</param>
+        /// <returns>The response</returns>
+        public IRestResponse Suspend(ImmoVlanClient client, string softwareId) {
+            return client.SuspendProperty(softwareId).Result;
+        }
+
+        /// <summary>
         /// Gets the commercial status of a property.
         /// </summary>
         /// <returns>The correct status</returns>

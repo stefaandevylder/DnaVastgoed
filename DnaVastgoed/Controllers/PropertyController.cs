@@ -175,6 +175,32 @@ namespace DnaVastgoed.Controllers {
         }
 
         /// <summary>
+        /// Suspend all properties.
+        /// </summary>
+        /// <param name="apiKey">The API admin key</param>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("suspend/all")]
+        public ActionResult<IEnumerable<string>> SuspendAllProperties(string apiKey) {
+            if (apiKey != Configuration["ApiKey"])
+                return BadRequest("API key does not exist.");
+
+            ICollection<string> logs = new List<string>();
+            ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
+                Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
+                Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
+
+            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+                immovlanClient.SuspendProperty(property.Id.ToString());
+                logs.Add($"Property {property.Name} suspended.");
+            }
+
+            _propertyRepository.RemoveAll();
+            _propertyRepository.SaveChanges();
+
+            return Ok(logs);
+        }
+
+        /// <summary>
         /// First we need to parse all possible properties 
         /// from our wordpress Homeo theme. This uses
         /// the BASE URL (wordpress json) and just retreives all

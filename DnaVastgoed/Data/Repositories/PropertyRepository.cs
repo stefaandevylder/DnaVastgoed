@@ -49,6 +49,13 @@ namespace DnaVastgoed.Data.Repositories {
         }
 
         /// <summary>
+        /// Remove all properties from the database.
+        /// </summary>
+        public void RemoveAll() {
+            _properties.RemoveRange(GetAll());
+        }
+
+        /// <summary>
         /// Save all changes.
         /// </summary>
         public void SaveChanges() {
