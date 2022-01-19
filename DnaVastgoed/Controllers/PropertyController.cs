@@ -215,7 +215,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="property">The property to insert</param>
         /// <returns>The content of the result</returns>
         private string AddOrUpdateProperty(DnaProperty property) {
-            DnaProperty propertyFound = _propertyRepository.Get(property.Name);
+            DnaProperty propertyFound = _propertyRepository.GetByURL(property.URL);
 
             if (propertyFound == null) {
                 if (property.Price != null) {

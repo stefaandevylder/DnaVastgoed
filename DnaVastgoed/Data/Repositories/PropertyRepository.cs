@@ -16,12 +16,12 @@ namespace DnaVastgoed.Data.Repositories {
         }
 
         /// <summary>
-        /// Get a property by ID.
+        /// Get a property by name and location.
         /// </summary>
-        /// <param name="propertyName">The property name</param>
+        /// <param name="url">The property url</param>
         /// <returns>The found property object or null</returns>
-        public DnaProperty Get(string propertyName) {
-            return _properties.FirstOrDefault(p => p.Name.ToLower() == propertyName.ToLower());
+        public DnaProperty GetByURL(string url) {
+            return _properties.FirstOrDefault(p => p.URL == url);
         }
 
         /// <summary>
