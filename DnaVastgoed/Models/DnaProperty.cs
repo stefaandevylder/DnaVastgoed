@@ -137,10 +137,10 @@ namespace DnaVastgoed.Models {
                 }
             }
 
-            IHtmlCollection<IElement> images = document.QuerySelectorAll("div.list-gallery-property-v2 div.image-wrapper img");
+            IHtmlCollection<IElement> images = document.QuerySelectorAll("div.list-gallery-property-v2 a");
 
             foreach (var el in images) {
-                Images.Add(new DnaPropertyImage(el.GetAttribute("data-src").Replace(replaceUrl, baseUrl)));
+                Images.Add(new DnaPropertyImage(el.GetAttribute("href").Replace(replaceUrl, baseUrl)));
             }
         }
 
