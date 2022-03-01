@@ -281,6 +281,7 @@ namespace DnaVastgoed.Controllers {
                     propertyFound.Verkooprecht = property.Verkooprecht;
                     propertyFound.RisicoOverstroming = property.RisicoOverstroming;
                     propertyFound.AfgebakendOverstromingsGebied = property.AfgebakendOverstromingsGebied;
+                    propertyFound.Images = property.Images;
 
                     return $"UPDATED: Property {property.Name}";
                 } else {
