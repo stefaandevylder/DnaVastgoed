@@ -114,9 +114,11 @@ namespace DnaVastgoed.Network {
             ICollection<Picture> pictures = new List<Picture>();
 
             for (int i = 0; i < _prop.Images.Count(); i++) {
-                string imageUrl = _prop.Images.ToArray()[i].Url;
+                if (i < 31) {
+                    string imageUrl = _prop.Images.ToArray()[i].Url;
 
-                pictures.Add(new Picture(i + 1, EncodeImage(imageUrl)));
+                    pictures.Add(new Picture(i + 1, EncodeImage(imageUrl)));
+                }
             }
 
             return pictures.ToArray();
