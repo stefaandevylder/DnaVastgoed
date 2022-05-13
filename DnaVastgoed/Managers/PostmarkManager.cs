@@ -41,6 +41,32 @@ namespace DnaVastgoed.Managers {
             await _client.SendMessagesAsync(messages.ToArray());
         }
 
+        /// <summary>
+        /// Send an email everytime an upload happens to ImmoVlan.
+        /// </summary>
+        /// <param name="properties">The properties to upload</param>
+        public async Task sendUploadedImmoVlan(IEnumerable<DnaProperty> properties) {
+            var message = new TemplatedPostmarkMessage();
+
+            message.From = "info@dnavastgoed.be";
+            message.MessageStream = "outbound";
+            message.To = "info@dnavastgoed.be";
+
+            message.TemplateId = 27941286;
+            message.TemplateModel = new {
+                Count = properties.Count(),
+                Properties = properties.Select(property => new {
+                    Name = property.Name,
+                    Type = property.Type,
+                    Status = property.Status,
+                    Location = property.Location,
+                    Price = property.Price,
+                })
+            };
+
+            await _client.SendMessageAsync(message);
+        }
+
     }
 
 }

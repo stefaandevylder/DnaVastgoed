@@ -85,8 +85,9 @@ namespace DnaVastgoed.Controllers {
         /// <param name="staging">Wether it has to be send to the production servers or debug servers</param>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("immovlan")]
-        public ActionResult<IEnumerable<string>> UploadToImmovlan(bool staging = true) {
+        public async Task<ActionResult<IEnumerable<string>>> UploadToImmovlan(bool staging = true) {
             ICollection<string> logs = new List<string>();
+            ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], staging);
@@ -99,10 +100,13 @@ namespace DnaVastgoed.Controllers {
 
                     var result = new ImmoVlanProperty(property).Publish(immovlanClient);
                     logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
+                    propertiesUploaded.Add(property);
                 }
             }
 
             _propertyRepository.SaveChanges();
+
+            await _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
 
             return Ok(logs);
         }
