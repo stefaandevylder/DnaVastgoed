@@ -106,7 +106,9 @@ namespace DnaVastgoed.Controllers {
 
             _propertyRepository.SaveChanges();
 
-            await _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
+            if (propertiesUploaded.Count() > 0) {
+                await _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
+            }
 
             return Ok(logs);
         }
