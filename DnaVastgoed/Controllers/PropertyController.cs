@@ -201,7 +201,8 @@ namespace DnaVastgoed.Controllers {
             immovlanClient.SuspendProperty(property.Id.ToString());
             logs.Add($"Property {property.Name} suspended.");
 
-            _propertyRepository.Remove(property);
+            property.UploadToImmovlan = false;
+
             _propertyRepository.SaveChanges();
 
             return Ok(logs);
