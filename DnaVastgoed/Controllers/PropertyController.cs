@@ -181,6 +181,33 @@ namespace DnaVastgoed.Controllers {
         }
 
         /// <summary>
+        /// Suspend one property.
+        /// </summary>
+        /// <param name="apiKey">The API admin key</param>
+        /// <param name="id">The ID of the property to suspend</param>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("suspend")]
+        public ActionResult<IEnumerable<string>> SuspendProperty(string apiKey, int id) {
+            if (apiKey != Configuration["ApiKey"])
+                return BadRequest("API key does not exist.");
+
+            ICollection<string> logs = new List<string>();
+            ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
+                Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
+                Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
+
+            DnaProperty property = _propertyRepository.GetById(id);
+
+            immovlanClient.SuspendProperty(property.Id.ToString());
+            logs.Add($"Property {property.Name} suspended.");
+
+            _propertyRepository.Remove(property);
+            _propertyRepository.SaveChanges();
+
+            return Ok(logs);
+        }
+
+        /// <summary>
         /// Suspend all properties.
         /// </summary>
         /// <param name="apiKey">The API admin key</param>
