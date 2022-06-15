@@ -61,7 +61,9 @@ namespace DnaVastgoed.Network {
         /// </summary>
         /// <returns>The correct status</returns>
         private CommercialStatus GetCommercialStatus() {
-            return _prop.Status.Contains("Verkocht") || _prop.Status.Contains("Verhuurd") ? CommercialStatus.SOLD : CommercialStatus.ONLINE;
+            return _prop.Status.Contains("Verkocht") 
+                || _prop.Status.Contains("Verhuurd") 
+                || _prop.Status.Contains("Realisatie") ? CommercialStatus.SOLD : CommercialStatus.ONLINE;
         }
 
         /// <summary>
