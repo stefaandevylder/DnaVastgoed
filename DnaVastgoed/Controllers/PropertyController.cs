@@ -85,7 +85,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="staging">Wether it has to be send to the production servers or debug servers</param>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("immovlan")]
-        public async Task<ActionResult<IEnumerable<string>>> UploadToImmovlan(bool staging = true) {
+        public async Task<ActionResult<IEnumerable<string>>> UploadToImmovlan(bool staging = false) {
             ICollection<string> logs = new List<string>();
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
