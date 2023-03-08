@@ -4,8 +4,11 @@ This is a script to crawle DnaVastgoed.be for properties.
 
 To run this project:
 
-- Run `dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnetapp.pfx -p { password here }` and `dotnet dev-certs https --trust` to trust the certificate
-- Create a folder `Database` in the root of the project
+- Run `dotnet dev-certs https -ep ~/.aspnet/https/aspnetapp.pfx -p { password here }` to create the HTTPS certificate
+- Run `dotnet dev-certs https --trust` to trust the HTTPS certificate
 - Copy the `.env.dist` to `.env` and fill in the correct values
+- Create a folder `Database` in the root of the project
 - Run `docker-compose build` to build the docker image
 - Run `docker-compose up -d` to run the script
+
+**Note: Run all commands in current folder**
