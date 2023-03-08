@@ -10,3 +10,4 @@ services:
       - .env
     volumes:
       - ./Database:/Database
+      - ~/.aspnet/https:/https:ro
