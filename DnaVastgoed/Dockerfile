@@ -10,6 +10,8 @@ WORKDIR /src
 COPY . .
 RUN dotnet build "DnaVastgoed.csproj" -c Release -o /app/build
 
+RUN dotnet dev-certs https
+
 # PUBLISH - The project
 FROM build AS publish
 RUN dotnet publish "DnaVastgoed.csproj" -c Release -o /app/publish
