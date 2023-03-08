@@ -4,10 +4,11 @@ services:
     container_name: web
     build: ./DnaVastgoed/
     ports:
-      - "80"
-      - "443"
+      - "5000:80"
+      - "5001:443"
     env_file:
       - .env
     volumes:
       - ./Database:/Database
       - ~/.aspnet/https:/https:ro
+    restart: on-failure

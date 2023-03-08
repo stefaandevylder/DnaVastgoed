@@ -11,4 +11,6 @@ To run this project:
 - Run `docker-compose build` to build the docker image
 - Run `docker-compose up -d` to run the script
 
+The server is avaalable on `https://localhost:5001`
+
 **Note: Run all commands in current folder**
