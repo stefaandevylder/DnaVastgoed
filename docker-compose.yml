@@ -1,0 +1,11 @@
+version: "3.3"
+services:
+  web:
+    container_name: web
+    build: ./DnaVastgoed/
+    ports:
+      - "8081:80"
+    env_file:
+      - .env
+    volumes:
+      - ./Database:/Database

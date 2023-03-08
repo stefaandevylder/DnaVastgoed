@@ -13,7 +13,7 @@ namespace DnaVastgoed.Data {
         /// </summary>
         /// <param name="options">Any context options</param>
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite("Data Source=DnaVastgoedDatabase.db");
+            => options.UseSqlite("Data Source=../Database/DnaVastgoedDatabase.db");
     }
 
 }
