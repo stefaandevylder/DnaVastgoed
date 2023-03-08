@@ -8,6 +8,8 @@ namespace DnaVastgoed.Models {
         public int Id { get; set; }
         public string Url { get; set; }
 
+        public DnaPropertyImage() { }
+
         public DnaPropertyImage(string url) {
             Url = url;
         }
