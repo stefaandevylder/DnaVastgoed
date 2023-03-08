@@ -1,8 +1,8 @@
 # SETUP - Base
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS base
 WORKDIR /app
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 80
+EXPOSE 443
 
 # BUILD - Copy the files
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
