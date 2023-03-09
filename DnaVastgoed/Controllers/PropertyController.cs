@@ -82,10 +82,11 @@ namespace DnaVastgoed.Controllers {
         /// has to be uploaded to Immovlan or not. If true, it will upload
         /// the property and set the status so it will not upload twice.
         /// </summary>
-        /// <param name="staging">Wether it has to be send to the production servers or debug servers</param>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("immovlan")]
-        public async Task<ActionResult<IEnumerable<string>>> UploadToImmovlan(bool staging = false) {
+        public async Task<ActionResult<IEnumerable<string>>> UploadToImmovlan() {
+            bool staging = false;
+
             ICollection<string> logs = new List<string>();
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
@@ -166,7 +167,7 @@ namespace DnaVastgoed.Controllers {
         [HttpGet("resetstatus")]
         public ActionResult<IEnumerable<string>> ResetStatuses(string apiKey) {
             if (apiKey != Configuration["ApiKey"])
-                return BadRequest("API key does not exist.");
+                return BadRequest("API key is not correct.");
             
             ICollection<string> logs = new List<string>();
 
@@ -189,7 +190,7 @@ namespace DnaVastgoed.Controllers {
         [HttpGet("suspend")]
         public ActionResult<IEnumerable<string>> SuspendProperty(string apiKey, int id) {
             if (apiKey != Configuration["ApiKey"])
-                return BadRequest("API key does not exist.");
+                return BadRequest("API key is not correct.");
 
             ICollection<string> logs = new List<string>();
             ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
@@ -216,7 +217,7 @@ namespace DnaVastgoed.Controllers {
         [HttpGet("suspend/all")]
         public ActionResult<IEnumerable<string>> SuspendAllProperties(string apiKey) {
             if (apiKey != Configuration["ApiKey"])
-                return BadRequest("API key does not exist.");
+                return BadRequest("API key is not correct.");
 
             ICollection<string> logs = new List<string>();
             ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
