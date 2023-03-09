@@ -298,7 +298,7 @@ namespace DnaVastgoed.Controllers {
                     propertyFound.Description = property.Description;
                     propertyFound.Location = property.Location;
 
-                    if (propertyFound.Price != null) {
+                    if (property.Price != null) {
                         propertyFound.Price = property.Price;
                     }
 
