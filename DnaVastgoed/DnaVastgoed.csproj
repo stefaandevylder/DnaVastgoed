@@ -6,11 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.16.0" />
-    <PackageReference Include="ImmoVlanAPI" Version="1.1.0" />
+    <PackageReference Include="AngleSharp" Version="1.0.1" />
+    <PackageReference Include="ImmoVlanAPI" Version="2.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8" />
-    <PackageReference Include="Postmark" Version="4.5.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
+    <PackageReference Include="Postmark" Version="4.7.7" />
+    <PackageReference Include="SpottoAPI" Version="1.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
 

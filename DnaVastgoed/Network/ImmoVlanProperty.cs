@@ -22,7 +22,7 @@ namespace DnaVastgoed.Network {
         /// </summary>
         /// <param name="client">The Immovlan client</param>
         /// <returns>The response</returns>
-        public IRestResponse Publish(ImmoVlanClient client) {
+        public RestResponse Publish(ImmoVlanClient client) {
             Property prop = new Property(_prop.Id.ToString(), _prop.Id.ToString(), GetCommercialStatus(),
                 new Classification(GetTransactionType(), GetPropertyType()),
                 new Location(new Address(_prop.GetLocation()[2], _prop.GetLocation()[0], _prop.GetLocation()[1], null, _prop.GetLocation()[3])) {
@@ -52,7 +52,7 @@ namespace DnaVastgoed.Network {
         /// </summary>
         /// <param name="client">The Immovlan client</param>
         /// <returns>The response</returns>
-        public IRestResponse Suspend(ImmoVlanClient client, string softwareId) {
+        public RestResponse Suspend(ImmoVlanClient client, string softwareId) {
             return client.SuspendProperty(softwareId).Result;
         }
 
@@ -132,11 +132,10 @@ namespace DnaVastgoed.Network {
         /// <param name="imageUrl">The url we need to encode</param>
         /// <returns>A base64 in string form</returns>
         private string EncodeImage(string imageUrl) {
-            using (WebClient webClient = new WebClient()) {
-                byte[] data = webClient.DownloadData(imageUrl);
+            using WebClient webClient = new WebClient();
+            byte[] data = webClient.DownloadData(imageUrl);
 
-                return Convert.ToBase64String(data);
-            }
+            return Convert.ToBase64String(data);
         }
 
     }

@@ -60,8 +60,8 @@ namespace DnaVastgoed.Controllers {
 
             foreach (string link in links) {
                 var client = new RestClient(link);
-                var request = new RestRequest(Method.GET);
-                var queryResult = client.Execute(request);
+                var request = new RestRequest();
+                var queryResult = client.Get(request);
 
                 DnaProperty property = new DnaProperty(
                     parser.ParseDocument(queryResult.Content),
@@ -251,7 +251,7 @@ namespace DnaVastgoed.Controllers {
             ICollection<string> links = new List<string>();
 
             var client = new RestClient(url);
-            var request = new RestRequest(req, Method.GET);
+            var request = new RestRequest(req, Method.Get);
 
             request.OnBeforeDeserialization = resp => { resp.ContentType = "application/json"; };
 
