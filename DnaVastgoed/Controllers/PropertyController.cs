@@ -112,6 +112,82 @@ namespace DnaVastgoed.Controllers {
         }
 
         /// <summary>
+        /// Reset all statuses to upload to immovlan.
+        /// </summary>
+        /// <param name="apiKey">The API admin key</param>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("immovlan/resetstatus")]
+        public ActionResult<IEnumerable<string>> ResetStatusesImmovlan(string apiKey) {
+            if (apiKey != Configuration["ApiKey"])
+                return BadRequest("API key is not correct.");
+
+            ICollection<string> logs = new List<string>();
+
+            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+                property.UploadToImmovlan = true;
+                logs.Add($"Status reset for {property.Name}");
+            }
+
+            _propertyRepository.SaveChanges();
+
+            return Ok(logs);
+        }
+
+        /// <summary>
+        /// Suspend one property.
+        /// </summary>
+        /// <param name="apiKey">The API admin key</param>
+        /// <param name="id">The ID of the property to suspend</param>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("immovlan/suspend")]
+        public ActionResult<IEnumerable<string>> SuspendImmovlanProperty(string apiKey, int id) {
+            if (apiKey != Configuration["ApiKey"])
+                return BadRequest("API key is not correct.");
+
+            ICollection<string> logs = new List<string>();
+            ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
+                Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
+                Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
+
+            DnaProperty property = _propertyRepository.GetById(id);
+
+            immovlanClient.SuspendProperty(property.Id.ToString());
+            logs.Add($"Property {property.Name} suspended.");
+
+            property.UploadToImmovlan = false;
+
+            _propertyRepository.SaveChanges();
+
+            return Ok(logs);
+        }
+
+        /// <summary>
+        /// Suspend all properties.
+        /// </summary>
+        /// <param name="apiKey">The API admin key</param>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("immovlan/suspend/all")]
+        public ActionResult<IEnumerable<string>> SuspendAllImmovlanProperties(string apiKey) {
+            if (apiKey != Configuration["ApiKey"])
+                return BadRequest("API key is not correct.");
+
+            ICollection<string> logs = new List<string>();
+            ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
+                Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
+                Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
+
+            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+                immovlanClient.SuspendProperty(property.Id.ToString());
+                logs.Add($"Property {property.Name} suspended.");
+            }
+
+            _propertyRepository.RemoveAll();
+            _propertyRepository.SaveChanges();
+
+            return Ok(logs);
+        }
+
+        /// <summary>
         /// Gets all properties from the database, checks if the property
         /// has to be uploaded to Spotto or not. If true, it will upload
         /// the property and set the status so it will not upload twice.
@@ -138,6 +214,28 @@ namespace DnaVastgoed.Controllers {
             _propertyRepository.SaveChanges();
 
             // SEND EMAIL
+
+            return Ok(logs);
+        }
+
+        /// <summary>
+        /// Reset all statuses to upload to spotto.
+        /// </summary>
+        /// <param name="apiKey">The API admin key</param>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("spotto/resetstatus")]
+        public ActionResult<IEnumerable<string>> ResetStatusesSpotto(string apiKey) {
+            if (apiKey != Configuration["ApiKey"])
+                return BadRequest("API key is not correct.");
+
+            ICollection<string> logs = new List<string>();
+
+            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+                property.UploadToSpotto = true;
+                logs.Add($"Status reset for {property.Name}");
+            }
+
+            _propertyRepository.SaveChanges();
 
             return Ok(logs);
         }
@@ -182,83 +280,6 @@ namespace DnaVastgoed.Controllers {
                 }
             }
 
-            _propertyRepository.SaveChanges();
-
-            return Ok(logs);
-        }
-
-        /// <summary>
-        /// Reset all statuses to upload to immovlan.
-        /// </summary>
-        /// <param name="apiKey">The API admin key</param>
-        /// <returns>A log list of what happend during this action (To debug)</returns>
-        [HttpGet("resetstatus")]
-        public ActionResult<IEnumerable<string>> ResetStatuses(string apiKey) {
-            if (apiKey != Configuration["ApiKey"])
-                return BadRequest("API key is not correct.");
-            
-            ICollection<string> logs = new List<string>();
-
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
-                property.UploadToImmovlan = true;
-                property.UploadToSpotto = true;
-                logs.Add($"Status reset for {property.Name}");
-            }
-
-            _propertyRepository.SaveChanges();
-
-            return Ok(logs);
-        }
-
-        /// <summary>
-        /// Suspend one property.
-        /// </summary>
-        /// <param name="apiKey">The API admin key</param>
-        /// <param name="id">The ID of the property to suspend</param>
-        /// <returns>A log list of what happend during this action (To debug)</returns>
-        [HttpGet("suspend")]
-        public ActionResult<IEnumerable<string>> SuspendProperty(string apiKey, int id) {
-            if (apiKey != Configuration["ApiKey"])
-                return BadRequest("API key is not correct.");
-
-            ICollection<string> logs = new List<string>();
-            ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
-                Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
-                Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
-
-            DnaProperty property = _propertyRepository.GetById(id);
-
-            immovlanClient.SuspendProperty(property.Id.ToString());
-            logs.Add($"Property {property.Name} suspended.");
-
-            property.UploadToImmovlan = false;
-
-            _propertyRepository.SaveChanges();
-
-            return Ok(logs);
-        }
-
-        /// <summary>
-        /// Suspend all properties.
-        /// </summary>
-        /// <param name="apiKey">The API admin key</param>
-        /// <returns>A log list of what happend during this action (To debug)</returns>
-        [HttpGet("suspend/all")]
-        public ActionResult<IEnumerable<string>> SuspendAllProperties(string apiKey) {
-            if (apiKey != Configuration["ApiKey"])
-                return BadRequest("API key is not correct.");
-
-            ICollection<string> logs = new List<string>();
-            ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
-                Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
-                Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
-
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
-                immovlanClient.SuspendProperty(property.Id.ToString());
-                logs.Add($"Property {property.Name} suspended.");
-            }
-
-            _propertyRepository.RemoveAll();
             _propertyRepository.SaveChanges();
 
             return Ok(logs);
