@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using SpottoAPI;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -85,21 +86,17 @@ namespace DnaVastgoed.Controllers {
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("immovlan")]
         public async Task<ActionResult<IEnumerable<string>>> UploadToImmovlan() {
-            bool staging = false;
-
             ICollection<string> logs = new List<string>();
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
-                Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], staging);
-
-            if (staging) logs.Add("Staging is on.");
+                Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
                 if (property.UploadToImmovlan) {
                     property.UploadToImmovlan = false;
 
-                    var result = new ImmoVlanProperty(property).Publish(immovlanClient);
+                    var result = new DnaImmoVlanProperty(property).Publish(immovlanClient);
                     logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
                     propertiesUploaded.Add(property);
                 }
@@ -110,6 +107,37 @@ namespace DnaVastgoed.Controllers {
             if (propertiesUploaded.Count() > 0) {
                 await _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
             }
+
+            return Ok(logs);
+        }
+
+        /// <summary>
+        /// Gets all properties from the database, checks if the property
+        /// has to be uploaded to Spotto or not. If true, it will upload
+        /// the property and set the status so it will not upload twice.
+        /// </summary>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("spotto")]
+        public async Task<ActionResult<IEnumerable<string>>> UploadToSpotto(bool staging = true) {
+            ICollection<string> logs = new List<string>();
+            ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
+            SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], staging);
+
+            if (staging) logs.Add("Staging is on.");
+
+            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+                if (property.UploadToSpotto) {
+                    property.UploadToSpotto = false;
+
+                    var result = await new DnaSpottoProperty(property).Publish(spottoClient);
+                    logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
+                    propertiesUploaded.Add(property);
+                }
+            }
+
+            _propertyRepository.SaveChanges();
+
+            // SEND EMAIL
 
             return Ok(logs);
         }
@@ -173,6 +201,7 @@ namespace DnaVastgoed.Controllers {
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
                 property.UploadToImmovlan = true;
+                property.UploadToSpotto = true;
                 logs.Add($"Status reset for {property.Name}");
             }
 
@@ -281,6 +310,7 @@ namespace DnaVastgoed.Controllers {
             if (propertyFound == null) {
                 if (property.Price != null) {
                     property.UploadToImmovlan = true;
+                    property.UploadToSpotto = true;
                     property.SendToSubscribers = true;
 
                     _propertyRepository.Add(property);
@@ -292,6 +322,7 @@ namespace DnaVastgoed.Controllers {
             } else {
                 if (!property.Equals(propertyFound)) {
                     propertyFound.UploadToImmovlan = true;
+                    propertyFound.UploadToSpotto = true;
 
                     propertyFound.Name = property.Name;
                     propertyFound.Type = property.Type;

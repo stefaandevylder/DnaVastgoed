@@ -9,11 +9,11 @@ using System.Net;
 
 namespace DnaVastgoed.Network {
 
-    public class ImmoVlanProperty {
+    public class DnaImmoVlanProperty {
 
         private readonly DnaProperty _prop;
 
-        public ImmoVlanProperty(DnaProperty prop) {
+        public DnaImmoVlanProperty(DnaProperty prop) {
             _prop = prop;
         }
 
