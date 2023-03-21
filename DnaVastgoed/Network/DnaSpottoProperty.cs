@@ -35,7 +35,7 @@ namespace DnaVastgoed.Network {
                         new Description(DescriptionType.Title, "NL", _prop.Name),
                         new Description(DescriptionType.DetailedDescription, "NL", _prop.Description),
                     },
-                    Location = new LocationInfo {
+                    Location = _prop.Location != null ? new LocationInfo {
                         Address = new AddressInfo {
                             Street = _prop.GetLocation()[0],
                             StreetNumber = _prop.GetLocation()[1],
@@ -43,7 +43,7 @@ namespace DnaVastgoed.Network {
                             MunicipalityName = _prop.GetLocation()[3],
                             TwoLetterIsoCountryCode = "BE"
                         }
-                    }
+                    } : null
                 },
                 new SpottoTransaction() {
                     Type = transactionType,
@@ -58,10 +58,10 @@ namespace DnaVastgoed.Network {
                             PictureUrl = "https://dnavastgoed.be/wp-content/uploads/2020/09/Logo-7x7-PNG.png"
                         }
                     },
-                    SaleTypeInfo = transactionType == TransactionType.Sale ? new SaleTypeInfo {
+                    SaleTypeInfo = transactionType == TransactionType.Sale && _prop.Price != null ? new SaleTypeInfo {
                         Price = (double?)_prop.GetPrice()
                     } : null,
-                    RentTypeInfo = transactionType == TransactionType.Rent ? new RentTypeInfo {
+                    RentTypeInfo = transactionType == TransactionType.Rent && _prop.Price != null ? new RentTypeInfo {
                         Price = (double?)_prop.GetPrice()
                     } : null
                 },
@@ -115,7 +115,7 @@ namespace DnaVastgoed.Network {
                 case "Gemeubeld Appartement/Expats": return PropertyType.Apartment;
             }
 
-            return PropertyType.Unknown;
+            return PropertyType.Other;
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace DnaVastgoed.Network {
                 case "Garage": return PropertySubType.Garage;
             }
 
-            return PropertySubType.Unknown;
+            return PropertySubType.Other;
         }
 
     }
