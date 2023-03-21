@@ -25,6 +25,8 @@ namespace DnaVastgoed.Network {
         /// <param name="client">The Spotto client</param>
         /// <returns>The response</returns>
         public async Task<RestResponse> Publish(SpottoClient client) {
+            TransactionType transactionType = GetTransactionType();
+
             SpottoListing listing = new SpottoListing(
                 new SpottoProperty() {
                     Type = GetPropertyType(),
@@ -39,13 +41,14 @@ namespace DnaVastgoed.Network {
                             StreetNumber = _prop.GetLocation()[1],
                             MunicipalityPostalCode = _prop.GetLocation()[2],
                             MunicipalityName = _prop.GetLocation()[3],
+                            TwoLetterIsoCountryCode = "BE"
                         }
                     }
                 },
                 new SpottoTransaction() {
-                    Type = GetTransactionType(),
+                    Type = transactionType,
                     AvailabilityStatusType = AvailabilityStatusType.Available,
-                    HidePriceDetails = false,
+                    HidePriceDetails = _prop.Price == null,
                     ContactInfo = new ContactInfo {
                         ContactReference = "D&A Vastgoed",
                         ContactPerson = new ContactPerson {
@@ -55,9 +58,12 @@ namespace DnaVastgoed.Network {
                             PictureUrl = "https://dnavastgoed.be/wp-content/uploads/2020/09/Logo-7x7-PNG.png"
                         }
                     },
-                    SaleTypeInfo = new SaleTypeInfo {
+                    SaleTypeInfo = transactionType == TransactionType.Sale ? new SaleTypeInfo {
                         Price = (double?)_prop.GetPrice()
-                    }
+                    } : null,
+                    RentTypeInfo = transactionType == TransactionType.Rent ? new RentTypeInfo {
+                        Price = (double?)_prop.GetPrice()
+                    } : null
                 },
                 new SpottoResource() {
                     Images = _prop.Images.Select(dnaImage => {
