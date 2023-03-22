@@ -58,11 +58,11 @@ namespace DnaVastgoed.Network {
                             PictureUrl = "https://dnavastgoed.be/wp-content/uploads/2020/09/Logo-7x7-PNG.png"
                         }
                     },
-                    SaleTypeInfo = transactionType == TransactionType.Sale && _prop.Price != null ? new SaleTypeInfo {
-                        Price = (double?)_prop.GetPrice()
+                    SaleTypeInfo = transactionType == TransactionType.Sale ? new SaleTypeInfo {
+                        Price = _prop.Price != null ? (double?)_prop.GetPrice() : 0
                     } : null,
-                    RentTypeInfo = transactionType == TransactionType.Rent && _prop.Price != null ? new RentTypeInfo {
-                        Price = (double?)_prop.GetPrice()
+                    RentTypeInfo = transactionType == TransactionType.Rent ? new RentTypeInfo {
+                        Price = _prop.Price != null ? (double?)_prop.GetPrice() : 0
                     } : null
                 },
                 new SpottoResource() {
