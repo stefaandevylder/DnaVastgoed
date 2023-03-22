@@ -158,6 +158,10 @@ namespace DnaVastgoed.Network {
         /// Get the orientation.
         /// </summary>
         private OrientationType GetOrientation() {
+            if (string.IsNullOrWhiteSpace(_prop.OrientatieAchtergevel)) {
+                return OrientationType.Unknown;
+            }
+
             switch (_prop.OrientatieAchtergevel.ToLower()) {
                 case "n": return OrientationType.North;
                 case "no": return OrientationType.NorthEast;
