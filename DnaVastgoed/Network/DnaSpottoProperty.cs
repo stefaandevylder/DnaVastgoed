@@ -73,7 +73,13 @@ namespace DnaVastgoed.Network {
                             PhoneNumber = "03 776 19 22",
                             PictureUrl = "https://dnavastgoed.be/wp-content/uploads/2020/09/Logo-7x7-PNG.png"
                         }
-                    }
+                    },
+                    SaleTypeInfo = transactionType == TransactionType.Sale ? new SaleTypeInfo {
+                        Price = _prop.Price != null ? (double?)_prop.GetPrice() : 0
+                    } : null,
+                    RentTypeInfo = transactionType == TransactionType.Rent ? new RentTypeInfo {
+                        Price = _prop.Price != null ? (double?)_prop.GetPrice() : 0
+                    } : null
                 },
                 new SpottoResource() {
                     Images = _prop.Images.Select(dnaImage => {
@@ -88,18 +94,6 @@ namespace DnaVastgoed.Network {
                     }
                 }
             );
-
-            if (transactionType == TransactionType.Sale) {
-                listing.TransactionInfo.SaleTypeInfo = new SaleTypeInfo {
-                    Price = _prop.Price != null ? (double?)_prop.GetPrice() : 0,
-                };
-            }
-
-            if (transactionType == TransactionType.Rent) {
-                listing.TransactionInfo.RentTypeInfo = new RentTypeInfo {
-                    Price = _prop.Price != null ? (double?)_prop.GetPrice() : 0,
-                };
-            }
 
             return await client.CreatePublication(listing, _prop.Id.ToString());
         }
