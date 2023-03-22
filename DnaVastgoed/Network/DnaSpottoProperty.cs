@@ -36,7 +36,6 @@ namespace DnaVastgoed.Network {
                         new Description(DescriptionType.DetailedDescription, "NL", _prop.Description),
                     },
                     Location = _prop.Location != null ? new LocationInfo {
-                        HideLocation = false,
                         Address = new AddressInfo {
                             Street = _prop.GetLocation()[0],
                             StreetNumber = _prop.GetLocation()[1],
@@ -45,21 +44,21 @@ namespace DnaVastgoed.Network {
                             TwoLetterIsoCountryCode = "BE"
                         }
                     } : null,
-                    EnergyEfficiencyInfo = new EnergyEfficiencyInfo() {
-                        EpcScoreInKwhPerSquareMeterPerYear = GetEnergy(),
-                        EpcCertificateNumber = _prop.EPCNumber
-                    },
-                    ConstructionInfo = new ConstructionInfo() {
-                        AmountOfBedrooms = !string.IsNullOrWhiteSpace(_prop.Bedrooms) ? int.Parse(_prop.Bedrooms) : null,
-                        AmountOfBathrooms = !string.IsNullOrWhiteSpace(_prop.Bathrooms) ? int.Parse(_prop.Bathrooms) : null
-                    },
-                    FiscalInfo = new FiscalInfo() {
-                        CadastralIncomeIndexed = !string.IsNullOrWhiteSpace(_prop.KatastraalInkomen) ? int.Parse(_prop.KatastraalInkomen) : null
-                    },
-                    ParcelInfo = new ParcelInfo() {
-                        OrientationGarden = GetOrientation(),
-                        AmountOfTotalPlotSquareMeters = !string.IsNullOrWhiteSpace(_prop.LotArea) ? int.Parse(_prop.LotArea.Split(" ")[0]) : null
-                    }
+                    // EnergyEfficiencyInfo = new EnergyEfficiencyInfo() {
+                    //     EpcScoreInKwhPerSquareMeterPerYear = GetEnergy(),
+                    //     EpcCertificateNumber = _prop.EPCNumber
+                    // },
+                    // ConstructionInfo = new ConstructionInfo() {
+                    //     AmountOfBedrooms = !string.IsNullOrWhiteSpace(_prop.Bedrooms) ? int.Parse(_prop.Bedrooms) : null,
+                    //     AmountOfBathrooms = !string.IsNullOrWhiteSpace(_prop.Bathrooms) ? int.Parse(_prop.Bathrooms) : null
+                    // },
+                    // FiscalInfo = new FiscalInfo() {
+                    //     CadastralIncomeIndexed = !string.IsNullOrWhiteSpace(_prop.KatastraalInkomen) ? int.Parse(_prop.KatastraalInkomen) : null
+                    // },
+                    // ParcelInfo = new ParcelInfo() {
+                    //     OrientationGarden = GetOrientation(),
+                    //     AmountOfTotalPlotSquareMeters = !string.IsNullOrWhiteSpace(_prop.LotArea) ? int.Parse(_prop.LotArea.Split(" ")[0]) : null
+                    // }
                 },
                 new SpottoTransaction() {
                     Type = transactionType,
