@@ -231,8 +231,12 @@ namespace DnaVastgoed.Controllers {
             ICollection<string> logs = new List<string>();
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
-                property.UploadToSpotto = true;
-                logs.Add($"Status reset for {property.Name}");
+                if (property.Price != null) {
+                    property.UploadToSpotto = true;
+                    logs.Add($"Status reset for {property.Name}");
+                } else {
+                    logs.Add($"Ignored {property.Name} (Price null)");
+                }
             }
 
             _propertyRepository.SaveChanges();
