@@ -54,7 +54,7 @@ namespace DnaVastgoed.Network {
                         AmountOfBathrooms = !string.IsNullOrWhiteSpace(_prop.Bathrooms) ? int.Parse(_prop.Bathrooms) : null,
                     },
                     FiscalInfo = new FiscalInfo() {
-                        CadastralIncomeIndexed = !string.IsNullOrWhiteSpace(_prop.KatastraalInkomen) ? int.Parse(_prop.KatastraalInkomen) : null
+                        CadastralIncomeIndexed = GetCadastralincome()
                     },
                     ParcelInfo = new ParcelInfo() {
                         OrientationGarden = GetOrientation(),
@@ -204,7 +204,20 @@ namespace DnaVastgoed.Network {
             return EpcLabel.Unknown;
         }
 
+        /// <summary>
+        /// Gets the cadastralincome.
+        /// </summary>
+        private int? GetCadastralincome() {
+            if (!string.IsNullOrWhiteSpace(_prop.KatastraalInkomen)) {
+                try {
+                    return int.Parse(_prop.KatastraalInkomen);
+                } catch {
+                    return null;
+                }
+            }
 
+            return null;
+        }
     }
 
 }
