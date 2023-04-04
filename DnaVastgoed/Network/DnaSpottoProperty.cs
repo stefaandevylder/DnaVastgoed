@@ -44,21 +44,22 @@ namespace DnaVastgoed.Network {
                             TwoLetterIsoCountryCode = "BE"
                         }
                     } : null,
-                    // EnergyEfficiencyInfo = new EnergyEfficiencyInfo() {
-                    //     EpcScoreInKwhPerSquareMeterPerYear = GetEnergy(),
-                    //     EpcCertificateNumber = _prop.EPCNumber
-                    // },
-                    // ConstructionInfo = new ConstructionInfo() {
-                    //     AmountOfBedrooms = !string.IsNullOrWhiteSpace(_prop.Bedrooms) ? int.Parse(_prop.Bedrooms) : null,
-                    //     AmountOfBathrooms = !string.IsNullOrWhiteSpace(_prop.Bathrooms) ? int.Parse(_prop.Bathrooms) : null
-                    // },
-                    // FiscalInfo = new FiscalInfo() {
-                    //     CadastralIncomeIndexed = !string.IsNullOrWhiteSpace(_prop.KatastraalInkomen) ? int.Parse(_prop.KatastraalInkomen) : null
-                    // },
-                    // ParcelInfo = new ParcelInfo() {
-                    //     OrientationGarden = GetOrientation(),
-                    //     AmountOfTotalPlotSquareMeters = !string.IsNullOrWhiteSpace(_prop.LotArea) ? int.Parse(_prop.LotArea.Split(" ")[0]) : null
-                    // }
+                    EnergyEfficiencyInfo = GetEnergy() != null ? new EnergyEfficiencyInfo() {
+                         EpcScoreInKwhPerSquareMeterPerYear = GetEnergy(),
+                         EpcCertificateNumber = _prop.EPCNumber,
+                         EpcLabel = GetEPCLabel()
+                    } : null,
+                    ConstructionInfo = new ConstructionInfo() {
+                        AmountOfBedrooms = !string.IsNullOrWhiteSpace(_prop.Bedrooms) ? int.Parse(_prop.Bedrooms) : null,
+                        AmountOfBathrooms = !string.IsNullOrWhiteSpace(_prop.Bathrooms) ? int.Parse(_prop.Bathrooms) : null,
+                    },
+                    FiscalInfo = new FiscalInfo() {
+                        CadastralIncomeIndexed = !string.IsNullOrWhiteSpace(_prop.KatastraalInkomen) ? int.Parse(_prop.KatastraalInkomen) : null
+                    },
+                    ParcelInfo = new ParcelInfo() {
+                        OrientationGarden = GetOrientation(),
+                        AmountOfTotalPlotSquareMeters = !string.IsNullOrWhiteSpace(_prop.LotArea) ? int.Parse(_prop.LotArea.Split(" ")[0]) : null
+                    }
                 },
                 new SpottoTransaction() {
                     Type = transactionType,
@@ -151,19 +152,17 @@ namespace DnaVastgoed.Network {
         /// Get the orientation.
         /// </summary>
         private OrientationType GetOrientation() {
-            if (string.IsNullOrWhiteSpace(_prop.OrientatieAchtergevel)) {
-                return OrientationType.Unknown;
-            }
-
-            switch (_prop.OrientatieAchtergevel.ToLower()) {
-                case "n": return OrientationType.North;
-                case "no": return OrientationType.NorthEast;
-                case "o": return OrientationType.East;
-                case "so": return OrientationType.SouthEast;
-                case "s": return OrientationType.South;
-                case "sw": return OrientationType.SouthWest;
-                case "w": return OrientationType.West;
-                case "nw": return OrientationType.NorthWest;
+            if (!string.IsNullOrWhiteSpace(_prop.OrientatieAchtergevel)) {
+                switch (_prop.OrientatieAchtergevel.ToLower()) {
+                    case "n": return OrientationType.North;
+                    case "no": return OrientationType.NorthEast;
+                    case "o": return OrientationType.East;
+                    case "so": return OrientationType.SouthEast;
+                    case "s": return OrientationType.South;
+                    case "sw": return OrientationType.SouthWest;
+                    case "w": return OrientationType.West;
+                    case "nw": return OrientationType.NorthWest;
+                }
             }
 
             return OrientationType.Unknown;
@@ -173,14 +172,38 @@ namespace DnaVastgoed.Network {
         /// Gets the energy score.
         /// </summary>
         private int? GetEnergy() {
-            try {
-                if (_prop.Energy == null || _prop.Energy == "")
-                    return 0;
-                return int.Parse(_prop.Energy.Split(" ")[0]);
-            } catch {
-                return 0;
+            if (!string.IsNullOrWhiteSpace(_prop.Energy)) {
+                try {
+                    return int.Parse(_prop.Energy.Split(" ")[0]);
+                } catch {
+                    return null;
+                }
             }
+
+            return null;
         }
+
+        /// <summary>
+        /// Get the EPC label.
+        /// </summary>
+        private EpcLabel GetEPCLabel() {
+            if (!string.IsNullOrWhiteSpace(_prop.Energy)) {
+                string epcLabel = _prop.Energy.Split(" ").Last();
+
+                switch (epcLabel) {
+                    case "A": return EpcLabel.A;
+                    case "B": return EpcLabel.B;
+                    case "C": return EpcLabel.C;
+                    case "D": return EpcLabel.D;
+                    case "E": return EpcLabel.E;
+                    case "F": return EpcLabel.F;
+                    case "G": return EpcLabel.G;
+                }
+            }
+
+            return EpcLabel.Unknown;
+        }
+
 
     }
 
