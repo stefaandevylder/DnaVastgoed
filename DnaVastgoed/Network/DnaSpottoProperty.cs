@@ -64,7 +64,7 @@ namespace DnaVastgoed.Network {
                 new SpottoTransaction() {
                     Type = transactionType,
                     AvailabilityStatusType = AvailabilityStatusType.Available,
-                    HidePriceDetails = _prop.Price == null,
+                    HidePriceDetails = string.IsNullOrWhiteSpace(_prop.Price),
                     ContactInfo = new ContactInfo {
                         ContactReference = "D&A Vastgoed",
                         ContactPerson = new ContactPerson {

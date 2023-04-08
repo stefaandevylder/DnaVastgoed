@@ -97,15 +97,16 @@ namespace DnaVastgoed.Network {
         /// <summary>
         /// Gets the energy score.
         /// </summary>
-        /// <returns>The energy score</returns>
         private int? GetEnergy() {
-            try {
-                if (_prop.Energy == null || _prop.Energy == "")
-                    return 0;
-                return int.Parse(_prop.Energy.Split(" ")[0]);
-            } catch {
-                return 0;
+            if (!string.IsNullOrWhiteSpace(_prop.Energy)) {
+                try {
+                    return int.Parse(_prop.Energy.Split(" ")[0]);
+                } catch {
+                    return null;
+                }
             }
+
+            return null;
         }
 
         /// <summary>
