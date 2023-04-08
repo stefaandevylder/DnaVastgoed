@@ -175,7 +175,7 @@ namespace DnaVastgoed.Models {
                 && p.Description == Description
                 && p.Location == Location
                 && p.Energy == Energy
-                && p.Price == Price
+                && (p.Price == Price || p.Price == null)
                 && p.LotArea == LotArea
                 && p.LivingArea == LivingArea
                 && p.Rooms == Rooms
