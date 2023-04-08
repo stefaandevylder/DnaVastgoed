@@ -329,58 +329,58 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <param name="property">The property to insert</param>
         /// <returns>The content of the result</returns>
-        private string AddOrUpdateProperty(DnaProperty property) {
-            DnaProperty propertyFound = _propertyRepository.GetByURL(property.URL);
+        private string AddOrUpdateProperty(DnaProperty scrapedProperty) {
+            DnaProperty databaseProperty = _propertyRepository.GetByURL(scrapedProperty.URL);
 
-            if (propertyFound == null) {
-                if (property.Price != null) {
-                    property.UploadToImmovlan = true;
-                    property.UploadToSpotto = true;
-                    property.SendToSubscribers = true;
+            if (databaseProperty == null) {
+                if (scrapedProperty.Price != null) {
+                    scrapedProperty.UploadToImmovlan = true;
+                    scrapedProperty.UploadToSpotto = true;
+                    scrapedProperty.SendToSubscribers = true;
 
-                    _propertyRepository.Add(property);
+                    _propertyRepository.Add(scrapedProperty);
 
-                    return $"ADDED: Property {property.Name}";
+                    return $"ADDED: Property {scrapedProperty.Name}";
                 } else {
-                    return $"NO PRICE: Property {property.Name}";
+                    return $"NO PRICE: Property {scrapedProperty.Name}";
                 }
             } else {
-                if (!property.Equals(propertyFound)) {
-                    propertyFound.UploadToImmovlan = true;
-                    propertyFound.UploadToSpotto = true;
+                if (!databaseProperty.Equals(scrapedProperty)) {
+                    databaseProperty.UploadToImmovlan = true;
+                    databaseProperty.UploadToSpotto = true;
 
-                    propertyFound.Name = property.Name;
-                    propertyFound.Type = property.Type;
-                    propertyFound.Status = property.Status;
-                    propertyFound.Description = property.Description;
-                    propertyFound.Location = property.Location;
+                    databaseProperty.Name = scrapedProperty.Name;
+                    databaseProperty.Type = scrapedProperty.Type;
+                    databaseProperty.Status = scrapedProperty.Status;
+                    databaseProperty.Description = scrapedProperty.Description;
+                    databaseProperty.Location = scrapedProperty.Location;
 
-                    if (property.Price != null) {
-                        propertyFound.Price = property.Price;
+                    if (scrapedProperty.Price != null) {
+                        databaseProperty.Price = scrapedProperty.Price;
                     }
 
-                    propertyFound.Energy = property.Energy;
-                    propertyFound.LotArea = property.LotArea;
-                    propertyFound.LivingArea = property.LivingArea;
-                    propertyFound.Rooms = property.Rooms;
-                    propertyFound.Bedrooms = property.Bedrooms;
-                    propertyFound.Bathrooms = property.Bathrooms;
-                    propertyFound.EPCNumber = property.EPCNumber;
-                    propertyFound.KatastraalInkomen = property.KatastraalInkomen;
-                    propertyFound.OrientatieAchtergevel = property.OrientatieAchtergevel;
-                    propertyFound.Elektriciteitskeuring = property.Elektriciteitskeuring;
-                    propertyFound.Bouwvergunning = property.Bouwvergunning;
-                    propertyFound.StedenbouwkundigeBestemming = property.StedenbouwkundigeBestemming;
-                    propertyFound.Verkavelingsvergunning = property.Verkavelingsvergunning;
-                    propertyFound.Dagvaarding = property.Dagvaarding;
-                    propertyFound.Verkooprecht = property.Verkooprecht;
-                    propertyFound.RisicoOverstroming = property.RisicoOverstroming;
-                    propertyFound.AfgebakendOverstromingsGebied = property.AfgebakendOverstromingsGebied;
-                    propertyFound.Images = property.Images;
+                    databaseProperty.Energy = scrapedProperty.Energy;
+                    databaseProperty.LotArea = scrapedProperty.LotArea;
+                    databaseProperty.LivingArea = scrapedProperty.LivingArea;
+                    databaseProperty.Rooms = scrapedProperty.Rooms;
+                    databaseProperty.Bedrooms = scrapedProperty.Bedrooms;
+                    databaseProperty.Bathrooms = scrapedProperty.Bathrooms;
+                    databaseProperty.EPCNumber = scrapedProperty.EPCNumber;
+                    databaseProperty.KatastraalInkomen = scrapedProperty.KatastraalInkomen;
+                    databaseProperty.OrientatieAchtergevel = scrapedProperty.OrientatieAchtergevel;
+                    databaseProperty.Elektriciteitskeuring = scrapedProperty.Elektriciteitskeuring;
+                    databaseProperty.Bouwvergunning = scrapedProperty.Bouwvergunning;
+                    databaseProperty.StedenbouwkundigeBestemming = scrapedProperty.StedenbouwkundigeBestemming;
+                    databaseProperty.Verkavelingsvergunning = scrapedProperty.Verkavelingsvergunning;
+                    databaseProperty.Dagvaarding = scrapedProperty.Dagvaarding;
+                    databaseProperty.Verkooprecht = scrapedProperty.Verkooprecht;
+                    databaseProperty.RisicoOverstroming = scrapedProperty.RisicoOverstroming;
+                    databaseProperty.AfgebakendOverstromingsGebied = scrapedProperty.AfgebakendOverstromingsGebied;
+                    databaseProperty.Images = scrapedProperty.Images;
 
-                    return $"UPDATED: Property {property.Name}";
+                    return $"UPDATED: Property {scrapedProperty.Name}";
                 } else {
-                    return $"ALREADY EXISTS: Property {property.Name}";
+                    return $"ALREADY EXISTS: Property {scrapedProperty.Name}";
                 }
             }
         }
