@@ -102,11 +102,11 @@ namespace DnaVastgoed.Network {
                 try {
                     return int.Parse(_prop.Energy.Split(" ")[0]);
                 } catch {
-                    return null;
+                    return 0;
                 }
             }
 
-            return null;
+            return 0;
         }
 
         /// <summary>
