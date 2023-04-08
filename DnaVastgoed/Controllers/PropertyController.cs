@@ -355,7 +355,7 @@ namespace DnaVastgoed.Controllers {
                     databaseProperty.Description = scrapedProperty.Description;
                     databaseProperty.Location = scrapedProperty.Location;
 
-                    if (scrapedProperty.Price != null) {
+                    if (!string.IsNullOrWhiteSpace(scrapedProperty.Price)) {
                         databaseProperty.Price = scrapedProperty.Price;
                     }
 
