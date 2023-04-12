@@ -119,7 +119,7 @@ namespace DnaVastgoed.Network {
                 case "Te Huur": return TransactionType.Rent;
             }
 
-            return TransactionType.Sale;
+            return TransactionType.Unknown;
         }
 
         /// <summary>
