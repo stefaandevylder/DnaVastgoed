@@ -376,6 +376,10 @@ namespace DnaVastgoed.Controllers {
                     databaseProperty.Verkooprecht = scrapedProperty.Verkooprecht;
                     databaseProperty.RisicoOverstroming = scrapedProperty.RisicoOverstroming;
                     databaseProperty.AfgebakendOverstromingsGebied = scrapedProperty.AfgebakendOverstromingsGebied;
+                    databaseProperty.BuildingYear = scrapedProperty.BuildingYear;
+                    databaseProperty.Voorkooprecht = scrapedProperty.Voorkooprecht;
+                    databaseProperty.GScore = scrapedProperty.GScore;
+                    databaseProperty.PScore = scrapedProperty.PScore;
                     databaseProperty.Images = scrapedProperty.Images;
 
                     return $"UPDATED: Property {scrapedProperty.Name}";
