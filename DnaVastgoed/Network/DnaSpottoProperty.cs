@@ -45,13 +45,14 @@ namespace DnaVastgoed.Network {
                         }
                     } : null,
                     EnergyEfficiencyInfo = GetEnergy() != null ? new EnergyEfficiencyInfo() {
-                         EpcScoreInKwhPerSquareMeterPerYear = GetEnergy(),
-                         EpcCertificateNumber = _prop.EPCNumber,
-                         EpcLabel = GetEPCLabel()
+                        EpcScoreInKwhPerSquareMeterPerYear = GetEnergy(),
+                        EpcCertificateNumber = _prop.EPCNumber,
+                        EpcLabel = GetEPCLabel()
                     } : null,
                     ConstructionInfo = new ConstructionInfo() {
                         AmountOfBedrooms = !string.IsNullOrWhiteSpace(_prop.Bedrooms) ? int.Parse(_prop.Bedrooms) : null,
                         AmountOfBathrooms = !string.IsNullOrWhiteSpace(_prop.Bathrooms) ? int.Parse(_prop.Bathrooms) : null,
+                        ConstructionYear = !string.IsNullOrWhiteSpace(_prop.BuildingYear) ? int.Parse(_prop.BuildingYear) : null,
                     },
                     FiscalInfo = new FiscalInfo() {
                         CadastralIncomeIndexed = GetCadastralincome()
@@ -60,6 +61,9 @@ namespace DnaVastgoed.Network {
                         OrientationGarden = GetOrientation(),
                         AmountOfTotalPlotSquareMeters = !string.IsNullOrWhiteSpace(_prop.LotArea) ? int.Parse(_prop.LotArea.Split(" ")[0]) : null,
                         AmountOfBuiltSquareMeters = !string.IsNullOrWhiteSpace(_prop.LivingArea) ? int.Parse(_prop.LivingArea.Split(" ")[0]) : null
+                    },
+                    PermitInfo = new PermitInfo() {
+                        PermitType = string.IsNullOrWhiteSpace(_prop.Bouwvergunning) ? PermitType.Unknown : PermitType.PermitAvailable
                     }
                 },
                 new SpottoTransaction() {
