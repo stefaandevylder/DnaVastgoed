@@ -63,7 +63,9 @@ namespace DnaVastgoed.Network {
                         AmountOfBuiltSquareMeters = !string.IsNullOrWhiteSpace(_prop.LivingArea) ? int.Parse(_prop.LivingArea.Split(" ")[0]) : null
                     },
                     PermitInfo = new PermitInfo() {
-                        PermitType = string.IsNullOrWhiteSpace(_prop.Bouwvergunning) ? PermitType.Unknown : PermitType.PermitAvailable
+                        PermitType = string.IsNullOrWhiteSpace(_prop.Bouwvergunning) ? PermitType.Unknown : PermitType.PermitAvailable,
+                        AreaDesignationType = string.IsNullOrWhiteSpace(_prop.StedenbouwkundigeBestemming) ? AreaDesignationType.Unknown : AreaDesignationType.Urban,
+                        SubdivisionPermitType = GetSubdivisionalPermitType()
                     }
                 },
                 new SpottoTransaction() {
@@ -106,7 +108,6 @@ namespace DnaVastgoed.Network {
         /// <summary>
         /// Gets the TransactionType of a property.
         /// </summary>
-        /// <returns>The correct TransactionType</returns>
         private TransactionType GetTransactionType() {
             switch (_prop.Status) {
                 case "Verkocht": return TransactionType.Sale;
@@ -121,7 +122,6 @@ namespace DnaVastgoed.Network {
         /// <summary>
         /// Gets the proper property type.
         /// </summary>
-        /// <returns>An Spotto property type</returns>
         private PropertyType GetPropertyType() {
             switch (_prop.Type) {
                 case "Woning": return PropertyType.House;
@@ -141,7 +141,6 @@ namespace DnaVastgoed.Network {
         /// <summary>
         /// Gets the proper property subtype.
         /// </summary>
-        /// <returns>An Spotto property subtype</returns>
         private PropertySubType GetPropertySubType() {
             switch (_prop.Type) {
                 case "Studio": return PropertySubType.Studio;
@@ -222,6 +221,19 @@ namespace DnaVastgoed.Network {
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Gets the proper property subtype.
+        /// </summary>
+        private PermitType GetSubdivisionalPermitType() {
+            switch (_prop.Verkavelingsvergunning) {
+                case "Geen": return PermitType.NoPermitAvailable;
+                case "Ja": return PermitType.PermitAvailable;
+                case "Niet beschikbaar": return PermitType.NoPermitAvailable;
+            }
+
+            return PermitType.Unknown;
         }
     }
 
