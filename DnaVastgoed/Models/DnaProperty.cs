@@ -35,6 +35,7 @@ namespace DnaVastgoed.Models {
         public string Bedrooms { get; set; }
         public string Bathrooms { get; set; }
         public string EPCNumber { get; set; }
+        public string BuildingYear { get; set; }
         public ICollection<DnaPropertyImage> Images { get; set; }
 
         // Necessary items for Belgian law
@@ -48,6 +49,13 @@ namespace DnaVastgoed.Models {
         public string Verkooprecht { get; set; }
         public string RisicoOverstroming { get; set; }
         public string AfgebakendOverstromingsGebied { get; set; }
+        public string Voorkooprecht { get; set; }
+        public string GScore { get; set; }
+        public string PScore { get; set; }
+
+        // Optional use, we dont own this data
+        public string CoordinatesLng { get; set; }
+        public string CoordinatesLat { get; set; }
 
         public DnaProperty() {
             Images = new List<DnaPropertyImage>();
@@ -128,6 +136,8 @@ namespace DnaVastgoed.Models {
                     case "Katastraal Inkomen (KI)": KatastraalInkomen = value; break;
                     case "Orientatie achtergevel": OrientatieAchtergevel = value; break;
                     case "Elektriciteitskeuring": Elektriciteitskeuring = value; break;
+                    case "Bouwjaar": BuildingYear = value; break;
+                    case "Voorkooprecht": Voorkooprecht = value; break;
                     case "Bouwvergunning": Bouwvergunning = value; break;
                     case "Stedenbouwkundige bestemming": StedenbouwkundigeBestemming = value; break;
                     case "Verkavelingsvergunning": Verkavelingsvergunning = value; break;
@@ -135,6 +145,8 @@ namespace DnaVastgoed.Models {
                     case "Verkooprecht": Verkooprecht = value; break;
                     case "Risicozone voor overstromingen": RisicoOverstroming = value; break;
                     case "Afgebakend overstromingsgebied": AfgebakendOverstromingsGebied = value; break;
+                    case "Overstromingskans Perceel (P-Score)": PScore = value; break;
+                    case "Overstromingskans Gebouw (G-score)": GScore = value; break;
                 }
             }
 
