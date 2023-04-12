@@ -60,7 +60,7 @@ namespace DnaVastgoed.Network {
                     ParcelInfo = new ParcelInfo() {
                         OrientationGarden = GetOrientation(),
                         AmountOfTotalPlotSquareMeters = !string.IsNullOrWhiteSpace(_prop.LotArea) ? int.Parse(_prop.LotArea.Split(" ")[0]) : null,
-                        AmountOfBuiltSquareMeters = !string.IsNullOrWhiteSpace(_prop.LivingArea) ? int.Parse(_prop.LivingArea.Split(" ")[0]) : null,
+                        AmountOfBuiltSquareMeters = !string.IsNullOrWhiteSpace(_prop.LivingArea) ? (int)double.Parse(_prop.LivingArea.Split(" ")[0]) : null,
                         ParcelHasPremptionRights = !string.IsNullOrWhiteSpace(_prop.Voorkooprecht) && _prop.Voorkooprecht.ToLower() == "Ja",
                         ParcelFloodProneType = GetFloodProneType()
                     },
