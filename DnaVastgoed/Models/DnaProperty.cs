@@ -202,7 +202,11 @@ namespace DnaVastgoed.Models {
                 && p.Dagvaarding == Dagvaarding
                 && p.Verkooprecht == Verkooprecht
                 && p.RisicoOverstroming == RisicoOverstroming
-                && p.AfgebakendOverstromingsGebied == AfgebakendOverstromingsGebied;
+                && p.AfgebakendOverstromingsGebied == AfgebakendOverstromingsGebied
+                && p.BuildingYear == BuildingYear
+                && p.Voorkooprecht == Voorkooprecht
+                && p.GScore == GScore
+                && p.PScore == PScore;
         }
 
         /// <summary>
@@ -232,6 +236,10 @@ namespace DnaVastgoed.Models {
                 $"\nVerkooprecht: {Verkooprecht}" +
                 $"\nOverstroming: {RisicoOverstroming}" +
                 $"\nAfgebakend: {AfgebakendOverstromingsGebied}" +
+                $"\nBouwjaar: {BuildingYear}" +
+                $"\nVoorkooprecht: {Voorkooprecht}" +
+                $"\nGScore: {GScore}" +
+                $"\nPSCore: {PScore}" +
                 $"\nImages: {string.Join(",", Images.Select(i => i.Url))}";
         }
 
