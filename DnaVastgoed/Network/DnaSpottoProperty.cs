@@ -61,7 +61,8 @@ namespace DnaVastgoed.Network {
                         OrientationGarden = GetOrientation(),
                         AmountOfTotalPlotSquareMeters = !string.IsNullOrWhiteSpace(_prop.LotArea) ? int.Parse(_prop.LotArea.Split(" ")[0]) : null,
                         AmountOfBuiltSquareMeters = !string.IsNullOrWhiteSpace(_prop.LivingArea) ? int.Parse(_prop.LivingArea.Split(" ")[0]) : null,
-                        ParcelHasPremptionRights = _prop.Voorkooprecht == "Ja"
+                        ParcelHasPremptionRights = _prop.Voorkooprecht == "Ja",
+                        ParcelFloodProneType = GetFloodProneType()
                     },
                     PermitInfo = new PermitInfo() {
                         PermitType = string.IsNullOrWhiteSpace(_prop.Bouwvergunning) ? PermitType.Unknown : PermitType.PermitAvailable,
@@ -229,13 +230,34 @@ namespace DnaVastgoed.Network {
         /// Gets the proper property subtype.
         /// </summary>
         private PermitType GetSubdivisionalPermitType() {
-            switch (_prop.Verkavelingsvergunning) {
-                case "Geen": return PermitType.NoPermitAvailable;
-                case "Ja": return PermitType.PermitAvailable;
-                case "Niet beschikbaar": return PermitType.NoPermitAvailable;
+            if (!string.IsNullOrWhiteSpace(_prop.Verkavelingsvergunning)) {
+                switch (_prop.Verkavelingsvergunning) {
+                    case "Geen": return PermitType.NoPermitAvailable;
+                    case "Ja": return PermitType.PermitAvailable;
+                    case "Niet beschikbaar": return PermitType.NoPermitAvailable;
+                }
             }
 
             return PermitType.Unknown;
+        }
+
+        /// <summary>
+        /// Gets the proper floodtype.
+        /// </summary>
+        private FloodProneType GetFloodProneType() {
+            if (!string.IsNullOrWhiteSpace(_prop.RisicoOverstroming)) {
+                string flood = _prop.RisicoOverstroming.ToLower();
+
+                if (flood.StartsWith("nee")) {
+                    return FloodProneType.NotFloodProne;
+                }
+
+                if (flood.StartsWith("ja")) {
+                    return FloodProneType.PossiblyFloodProneArea;
+                }
+            }
+
+            return FloodProneType.Unknown;
         }
     }
 
