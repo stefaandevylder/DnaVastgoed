@@ -65,7 +65,8 @@ namespace DnaVastgoed.Network {
                     PermitInfo = new PermitInfo() {
                         PermitType = string.IsNullOrWhiteSpace(_prop.Bouwvergunning) ? PermitType.Unknown : PermitType.PermitAvailable,
                         AreaDesignationType = string.IsNullOrWhiteSpace(_prop.StedenbouwkundigeBestemming) ? AreaDesignationType.Unknown : AreaDesignationType.Urban,
-                        SubdivisionPermitType = GetSubdivisionalPermitType()
+                        SubdivisionPermitType = GetSubdivisionalPermitType(),
+                        ConstructionOffenseSubpoenaType = string.IsNullOrWhiteSpace(_prop.Dagvaarding) ? ConstructionOffenseSubpoenaType.Unknown : ConstructionOffenseSubpoenaType.None
                     }
                 },
                 new SpottoTransaction() {
