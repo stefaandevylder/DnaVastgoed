@@ -61,7 +61,7 @@ namespace DnaVastgoed.Network {
                         OrientationGarden = GetOrientation(),
                         AmountOfTotalPlotSquareMeters = !string.IsNullOrWhiteSpace(_prop.LotArea) ? int.Parse(_prop.LotArea.Split(" ")[0]) : null,
                         AmountOfBuiltSquareMeters = !string.IsNullOrWhiteSpace(_prop.LivingArea) ? int.Parse(_prop.LivingArea.Split(" ")[0]) : null,
-                        ParcelHasPremptionRights = _prop.Voorkooprecht == "Ja",
+                        ParcelHasPremptionRights = !string.IsNullOrWhiteSpace(_prop.Voorkooprecht) && _prop.Voorkooprecht.ToLower() == "Ja",
                         ParcelFloodProneType = GetFloodProneType()
                     },
                     PermitInfo = new PermitInfo() {
