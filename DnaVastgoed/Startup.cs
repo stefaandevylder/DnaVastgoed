@@ -33,6 +33,7 @@ namespace DnaVastgoed {
 
             services.AddScoped(x => new PostmarkManager(Configuration["Postmark"]));
             services.AddScoped(x => new PostalCodeManager());
+            services.AddScoped(x => new CoordinatesManager());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {

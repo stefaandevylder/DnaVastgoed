@@ -11,6 +11,7 @@ using RestSharp;
 using SpottoAPI;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DnaVastgoed.Controllers {
@@ -23,16 +24,18 @@ namespace DnaVastgoed.Controllers {
 
         private readonly PostmarkManager _postmarkManager;
         private readonly PostalCodeManager _postalCodeManager;
+        private readonly CoordinatesManager _coordinatesManager;
 
         private readonly PropertyRepository _propertyRepository;
         private readonly SubscriberRepository _subscriberRepository;
 
         public PropertyController(IConfiguration configuration, PostmarkManager postmarkManager, PostalCodeManager postalCodeManager,
-            PropertyRepository propertyRepository, SubscriberRepository subscriberRepository) {
+            CoordinatesManager coordinatesManager, PropertyRepository propertyRepository, SubscriberRepository subscriberRepository) {
             Configuration = configuration;
 
             _postmarkManager = postmarkManager;
             _postalCodeManager = postalCodeManager;
+            _coordinatesManager = coordinatesManager;
 
             _propertyRepository = propertyRepository;
             _subscriberRepository = subscriberRepository;
@@ -53,7 +56,7 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("scrape")]
-        public ActionResult<IEnumerable<string>> Scrape() {
+        public async Task<ActionResult<IEnumerable<string>>> Scrape() {
             ICollection<string> logs = new List<string>();
             IEnumerable<string> links = ParseJson(Configuration["BaseURL"], "/wp-json/wp/v2/property?per_page=100&orderby=date");
 
@@ -70,11 +73,45 @@ namespace DnaVastgoed.Controllers {
                     Configuration["BaseURL_Replace"],
                     Configuration["BaseURL"]);
 
-                logs.Add(AddOrUpdateProperty(property));
+                string logResult = await AddOrUpdateProperty(property);
+                logs.Add(logResult);
             }
 
             _propertyRepository.SaveChanges();
 
+            return Ok(logs);
+        }        
+        
+        /// <summary>
+        /// Scrape the BaseURL for a list of all properties. After that
+        /// it will scrape each URL and save it in the database.
+        /// </summary>
+        /// <returns>A log list of what happend during this action (To debug)</returns>
+        [HttpGet("fetch-coordinates")]
+        public async Task<ActionResult<IEnumerable<string>>> FetchCoordinates(string apiKey) {
+            if (apiKey != Configuration["ApiKey"])
+                return BadRequest("API key is not correct.");
+
+            ICollection<string> logs = new List<string>();
+
+            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+                if (string.IsNullOrWhiteSpace(property.CoordinatesLng) || string.IsNullOrWhiteSpace(property.CoordinatesLat)) {
+                    var coordinates = await _coordinatesManager.GetCoordinatesFromAddress(property.GetLocation()[0],
+                        property.GetLocation()[1],
+                        property.GetLocation()[3],
+                        property.GetLocation()[2]);
+                    property.CoordinatesLat = coordinates.Lat;
+                    property.CoordinatesLng = coordinates.Lng;
+
+                    // The API we use has a rate limit of 2 requests every 1 second.
+                    Thread.Sleep(1000);
+                    logs.Add($"FETCHED: {coordinates.Lat} and {coordinates.Lng} for {property.Name}");
+                } else {
+                    logs.Add($"ALREADY FETCHED, skipping: {property.Name}");
+                }
+            }
+
+            _propertyRepository.SaveChanges();
             return Ok(logs);
         }
 
@@ -329,7 +366,7 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <param name="property">The property to insert</param>
         /// <returns>The content of the result</returns>
-        private string AddOrUpdateProperty(DnaProperty scrapedProperty) {
+        private async Task<string> AddOrUpdateProperty(DnaProperty scrapedProperty) {
             DnaProperty databaseProperty = _propertyRepository.GetByURL(scrapedProperty.URL);
 
             if (databaseProperty == null) {
@@ -337,6 +374,13 @@ namespace DnaVastgoed.Controllers {
                     scrapedProperty.UploadToImmovlan = true;
                     scrapedProperty.UploadToSpotto = true;
                     scrapedProperty.SendToSubscribers = true;
+
+                    var coordinates = await _coordinatesManager.GetCoordinatesFromAddress(scrapedProperty.GetLocation()[0],
+                        scrapedProperty.GetLocation()[1],
+                        scrapedProperty.GetLocation()[3],
+                        scrapedProperty.GetLocation()[2]);
+                    scrapedProperty.CoordinatesLat = coordinates.Lat;
+                    scrapedProperty.CoordinatesLng = coordinates.Lng;
 
                     _propertyRepository.Add(scrapedProperty);
 
