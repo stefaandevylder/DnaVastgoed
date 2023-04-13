@@ -36,6 +36,10 @@ namespace DnaVastgoed.Network {
                         new Description(DescriptionType.DetailedDescription, "NL", _prop.Description),
                     },
                     Location = _prop.Location != null ? new LocationInfo {
+                        Coordinates = new Coordinates {
+                            Latitude = !string.IsNullOrWhiteSpace(_prop.CoordinatesLat) ? double.Parse(_prop.CoordinatesLat) : null,
+                            Longitude = !string.IsNullOrWhiteSpace(_prop.CoordinatesLng) ? double.Parse(_prop.CoordinatesLng) : null,
+                        },
                         Address = new AddressInfo {
                             Street = _prop.GetLocation()[0],
                             StreetNumber = _prop.GetLocation()[1],
