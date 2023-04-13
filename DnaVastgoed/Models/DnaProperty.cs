@@ -77,12 +77,16 @@ namespace DnaVastgoed.Models {
         /// </summary>
         /// <returns></returns>
         public string[] GetLocation() {
-            string[] streetAndCity = Location.Split(',');
+            try {
+                string[] streetAndCity = Location.Split(',');
 
-            string[] streetAndNumber = streetAndCity[0].Trim().Split(' ');
-            string[] zipAndCity = streetAndCity[1].Trim().Split(' ');
+                string[] streetAndNumber = streetAndCity[0].Trim().Split(' ');
+                string[] zipAndCity = streetAndCity[1].Trim().Split(' ');
 
-            return new string[] { streetAndNumber[0], streetAndNumber[1], zipAndCity[0], zipAndCity[1] };
+                return new string[] { streetAndNumber[0], streetAndNumber[1], zipAndCity[0], zipAndCity[1] };
+            } catch {
+                return new string[] { "", "", "", "" };
+            }
         }
 
         /// <summary>

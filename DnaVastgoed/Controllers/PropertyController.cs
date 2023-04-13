@@ -96,10 +96,7 @@ namespace DnaVastgoed.Controllers {
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
                 if (string.IsNullOrWhiteSpace(property.CoordinatesLng) || string.IsNullOrWhiteSpace(property.CoordinatesLat)) {
-                    var coordinates = await _coordinatesManager.GetCoordinatesFromAddress(property.GetLocation()[0],
-                        property.GetLocation()[1],
-                        property.GetLocation()[3],
-                        property.GetLocation()[2]);
+                    var coordinates = await _coordinatesManager.GetCoordinatesFromAddress(property.Location);
                     property.CoordinatesLat = coordinates.Lat;
                     property.CoordinatesLng = coordinates.Lng;
 
@@ -375,10 +372,7 @@ namespace DnaVastgoed.Controllers {
                     scrapedProperty.UploadToSpotto = true;
                     scrapedProperty.SendToSubscribers = true;
 
-                    var coordinates = await _coordinatesManager.GetCoordinatesFromAddress(scrapedProperty.GetLocation()[0],
-                        scrapedProperty.GetLocation()[1],
-                        scrapedProperty.GetLocation()[3],
-                        scrapedProperty.GetLocation()[2]);
+                    var coordinates = await _coordinatesManager.GetCoordinatesFromAddress(scrapedProperty.Location);
                     scrapedProperty.CoordinatesLat = coordinates.Lat;
                     scrapedProperty.CoordinatesLng = coordinates.Lng;
 

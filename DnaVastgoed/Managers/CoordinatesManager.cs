@@ -16,12 +16,9 @@ namespace DnaVastgoed.Managers {
         /// Request a long and lat from free api.
         /// </summary>
         /// <returns>The format from geocode.maps.co</returns>
-        public async Task<CoordinatesResponse> GetCoordinatesFromAddress(string street, string housenumber, string city, string postalcode) {
+        public async Task<CoordinatesResponse> GetCoordinatesFromAddress(string address) {
             RestRequest req = new RestRequest("/search");
-            req.AddQueryParameter("street", housenumber.Trim() + "+" + street.Trim());
-            req.AddQueryParameter("city", city.Trim());
-            req.AddQueryParameter("country", "Belgium");
-            req.AddQueryParameter("postalcode", postalcode.Trim());
+            req.AddQueryParameter("q", address);
 
             var response = await Client.ExecuteGetAsync(req);
             var jsonResponse = JArray.Parse(response.Content);
