@@ -228,12 +228,10 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("spotto")]
-        public async Task<ActionResult<IEnumerable<string>>> UploadToSpotto(bool staging = true) {
+        public async Task<ActionResult<IEnumerable<string>>> UploadToSpotto() {
             ICollection<string> logs = new List<string>();
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
-            SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], staging);
-
-            if (staging) logs.Add("Staging is on.");
+            SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], false);
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
                 if (property.UploadToSpotto) {
