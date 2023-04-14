@@ -123,7 +123,7 @@ namespace DnaVastgoed.Network {
                 case "Te Huur": return TransactionType.Rent;
             }
 
-            return TransactionType.Unknown;
+            return _prop.GetPrice() > 10000 ? TransactionType.Sale : TransactionType.Rent;
         }
 
         /// <summary>

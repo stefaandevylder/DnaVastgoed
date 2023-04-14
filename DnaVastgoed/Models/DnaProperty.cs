@@ -95,7 +95,7 @@ namespace DnaVastgoed.Models {
         /// <returns>The decimal price form</returns>
         public decimal GetPrice() {
             try {
-                if (string.IsNullOrEmpty(Price)) return 0;
+                if (string.IsNullOrWhiteSpace(Price)) return 0;
 
                 return decimal.Parse(Price.Replace("€", "").Replace(".", ""));
             } catch {
