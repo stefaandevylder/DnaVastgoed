@@ -56,9 +56,9 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("scrape")]
-        public async Task<ActionResult<IEnumerable<string>>> Scrape() {
+        public async Task<ActionResult<IEnumerable<string>>> Scrape(int page = 1) {
             ICollection<string> logs = new List<string>();
-            IEnumerable<string> links = ParseJson(Configuration["BaseURL"], "/wp-json/wp/v2/property?per_page=100&orderby=date");
+            IEnumerable<string> links = ParseJson(Configuration["BaseURL"], $"/wp-json/wp/v2/property?per_page=100&page={page}&orderby=date");
 
             HtmlParser parser = new HtmlParser();
 
