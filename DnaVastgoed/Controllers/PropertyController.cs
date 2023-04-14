@@ -265,11 +265,11 @@ namespace DnaVastgoed.Controllers {
             ICollection<string> logs = new List<string>();
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
-                if (property.Price != null) {
+                if (property.Price != null || property.Status != "Realisatie") {
                     property.UploadToSpotto = true;
                     logs.Add($"Status reset for {property.Name}");
                 } else {
-                    logs.Add($"Ignored {property.Name} (Price null)");
+                    logs.Add($"Ignored {property.Name} (Price null or realisatie)");
                 }
             }
 
