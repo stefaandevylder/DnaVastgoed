@@ -77,7 +77,7 @@ namespace DnaVastgoed.Network {
                 },
                 new SpottoTransaction() {
                     Type = transactionType,
-                    AvailabilityStatusType = AvailabilityStatusType.Available,
+                    AvailabilityStatusType = GetAvailablityStatusType(),
                     HidePriceDetails = string.IsNullOrWhiteSpace(_prop.Price),
                     ContactInfo = new ContactInfo {
                         ContactReference = "D&A Vastgoed",
@@ -110,6 +110,21 @@ namespace DnaVastgoed.Network {
             );
 
             return await client.CreatePublication(listing, _prop.Id.ToString());
+        }
+
+        /// <summary>
+        /// Gets the AvailabilityStatusType of a property.
+        /// </summary>
+        private AvailabilityStatusType GetAvailablityStatusType() {
+            switch (_prop.Status) {
+                case "Verkocht": return AvailabilityStatusType.Unavailable;
+                case "Verhuurd": return AvailabilityStatusType.Unavailable;
+                case "Realisatie": return AvailabilityStatusType.Unavailable;
+                case "Te Koop": return AvailabilityStatusType.Available;
+                case "Te Huur": return AvailabilityStatusType.Available;
+            }
+
+            return AvailabilityStatusType.Available;
         }
 
         /// <summary>
