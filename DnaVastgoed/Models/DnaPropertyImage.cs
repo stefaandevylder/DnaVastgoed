@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DnaVastgoed.Models {
 
-    public class DnaPropertyImage {
+    public class DnaPropertyImage : IEquatable<DnaPropertyImage> {
 
         [Key]
         public int Id { get; set; }
+        public DnaProperty DnaProperty { get; set; }
         public string Url { get; set; }
 
         public DnaPropertyImage() { }
@@ -14,5 +16,12 @@ namespace DnaVastgoed.Models {
             Url = url;
         }
 
+        public bool Equals(DnaPropertyImage other) {
+            if (Url is null) {
+                return false;
+            }
+
+            return Url.Equals(other.Url);
+        }
     }
 }

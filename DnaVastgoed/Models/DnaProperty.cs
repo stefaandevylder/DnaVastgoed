@@ -206,8 +206,7 @@ namespace DnaVastgoed.Models {
                 && p.BuildingYear == BuildingYear
                 && p.Voorkooprecht == Voorkooprecht
                 && p.GScore == GScore
-                && p.PScore == PScore
-                && EqualsImages(p);
+                && p.PScore == PScore;
         }
 
         /// <summary>
@@ -216,7 +215,7 @@ namespace DnaVastgoed.Models {
         /// <param name="p">The property to check</param>
         /// <returns>True if they are equal</returns>
         public bool EqualsImages(DnaProperty p) {
-            return p.Images.Select(i => i.Url).SequenceEqual(Images.Select(i => i.Url));
+            return p.Images.SequenceEqual(Images);
         }
 
         /// <summary>

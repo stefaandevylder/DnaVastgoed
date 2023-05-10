@@ -9,10 +9,12 @@ namespace DnaVastgoed.Data.Repositories {
 
         private readonly ApplicationDbContext _context;
         private readonly DbSet<DnaProperty> _properties;
+        private readonly DbSet<DnaPropertyImage> _images;
 
         public PropertyRepository(ApplicationDbContext context) {
             _context = context;
             _properties = context.Properties;
+            _images = context.PropertyImages;
         }
 
         /// <summary>
@@ -55,6 +57,14 @@ namespace DnaVastgoed.Data.Repositories {
         /// <param name="property">The property we want to remove</param>
         public void Remove(DnaProperty property) {
             _properties.Remove(property);
+        }
+
+        /// <summary>
+        /// Remove all properties from the database.
+        /// </summary>
+        public void RemoveAllImagesFromProperty(int propertyId) {
+            var imagesToRemove = _images.Where(i => i.DnaProperty.Id.Equals(propertyId));
+            _images.RemoveRange(imagesToRemove);
         }
 
         /// <summary>

@@ -124,7 +124,7 @@ namespace DnaVastgoed.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Properties");
+                    b.ToTable("Properties", (string)null);
                 });
 
             modelBuilder.Entity("DnaVastgoed.Models.DnaPropertyImage", b =>
@@ -143,7 +143,7 @@ namespace DnaVastgoed.Migrations
 
                     b.HasIndex("DnaPropertyId");
 
-                    b.ToTable("PropertyImages");
+                    b.ToTable("PropertyImages", (string)null);
                 });
 
             modelBuilder.Entity("DnaVastgoed.Models.Subscriber", b =>
@@ -198,7 +198,7 @@ namespace DnaVastgoed.Migrations
 
                     b.HasKey("Email");
 
-                    b.ToTable("Subscribers");
+                    b.ToTable("Subscribers", (string)null);
                 });
 
             modelBuilder.Entity("DnaVastgoed.Models.DnaPropertyImage", b =>

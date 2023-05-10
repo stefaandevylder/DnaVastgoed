@@ -418,7 +418,8 @@ namespace DnaVastgoed.Controllers {
                     databaseProperty.PScore = scrapedProperty.PScore;
                     
                     if (!databaseProperty.EqualsImages(scrapedProperty)) {
-                        databaseProperty.Images.Clear();
+                        _propertyRepository.RemoveAllImagesFromProperty(databaseProperty.Id);
+
                         databaseProperty.Images = scrapedProperty.Images;
                     }
 
