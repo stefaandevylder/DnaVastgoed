@@ -418,7 +418,11 @@ namespace DnaVastgoed.Controllers {
                     databaseProperty.Voorkooprecht = scrapedProperty.Voorkooprecht;
                     databaseProperty.GScore = scrapedProperty.GScore;
                     databaseProperty.PScore = scrapedProperty.PScore;
-                    databaseProperty.Images = scrapedProperty.Images;
+                    
+                    if (!databaseProperty.EqualsImages(scrapedProperty)) {
+                        databaseProperty.Images.Clear();
+                        databaseProperty.Images = scrapedProperty.Images;
+                    }
 
                     return $"UPDATED: Property {scrapedProperty.Name}";
                 } else {

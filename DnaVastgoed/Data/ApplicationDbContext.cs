@@ -6,6 +6,7 @@ namespace DnaVastgoed.Data {
     public class ApplicationDbContext : DbContext {
 
         public DbSet<DnaProperty> Properties { get; set; }
+        public DbSet<DnaPropertyImage> PropertyImages { get; set; }
         public DbSet<Subscriber> Subscribers { get; set; }
 
         /// <summary>
