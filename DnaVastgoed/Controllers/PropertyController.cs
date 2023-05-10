@@ -56,9 +56,9 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("scrape")]
-        public async Task<ActionResult<IEnumerable<string>>> Scrape() {
+        public async Task<ActionResult<IEnumerable<string>>> Scrape(int page = 1) {
             ICollection<string> logs = new List<string>();
-            IEnumerable<string> links = ParseJson(Configuration["BaseURL"], "/wp-json/wp/v2/property?per_page=100&orderby=date");
+            IEnumerable<string> links = ParseJson(Configuration["BaseURL"], $"/wp-json/wp/v2/property?per_page=100&page={page}&orderby=date");
 
             HtmlParser parser = new HtmlParser();
 
@@ -228,12 +228,10 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("spotto")]
-        public async Task<ActionResult<IEnumerable<string>>> UploadToSpotto(bool staging = true) {
+        public async Task<ActionResult<IEnumerable<string>>> UploadToSpotto() {
             ICollection<string> logs = new List<string>();
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
-            SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], staging);
-
-            if (staging) logs.Add("Staging is on.");
+            SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], false);
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
                 if (property.UploadToSpotto) {
@@ -265,11 +263,11 @@ namespace DnaVastgoed.Controllers {
             ICollection<string> logs = new List<string>();
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
-                if (property.Price != null) {
+                if (property.Price != null || property.Status != "Realisatie") {
                     property.UploadToSpotto = true;
                     logs.Add($"Status reset for {property.Name}");
                 } else {
-                    logs.Add($"Ignored {property.Name} (Price null)");
+                    logs.Add($"Ignored {property.Name} (Price null or realisatie)");
                 }
             }
 
