@@ -46,8 +46,11 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <returns>A list of DnaProperty objects</returns>
         [HttpGet]
-        public ActionResult<IEnumerable<DnaProperty>> GetProperties() {
-            return Ok(_propertyRepository.GetAll());
+        public ActionResult<IEnumerable<DnaProperty>> GetProperties(int? id = null) {
+            if (!id.HasValue)
+                return Ok(_propertyRepository.GetAll());
+
+            return Ok(_propertyRepository.GetById(id.Value));
         }
 
         /// <summary>
