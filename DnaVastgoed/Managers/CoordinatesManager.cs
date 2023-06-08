@@ -21,13 +21,16 @@ namespace DnaVastgoed.Managers {
             req.AddQueryParameter("q", address);
 
             var response = await Client.ExecuteGetAsync(req);
-            var jsonResponse = JArray.Parse(response.Content);
 
-            if (jsonResponse.Count > 0) {
-                return new CoordinatesResponse() {
-                    Lat = jsonResponse[0]["lat"].ToString(),
-                    Lng = jsonResponse[0]["lon"].ToString()
-                };
+            if (response != null) {
+                var jsonResponse = JArray.Parse(response.Content);
+
+                if (jsonResponse.Count > 0) {
+                    return new CoordinatesResponse() {
+                        Lat = jsonResponse[0]["lat"].ToString(),
+                        Lng = jsonResponse[0]["lon"].ToString()
+                    };
+                }
             }
 
             return new CoordinatesResponse();
