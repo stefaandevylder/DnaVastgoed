@@ -20,18 +20,20 @@ namespace DnaVastgoed.Managers {
             RestRequest req = new RestRequest("/search");
             req.AddQueryParameter("q", address);
 
-            var response = await Client.ExecuteGetAsync(req);
+            try {
+                var response = await Client.ExecuteGetAsync(req);
 
-            if (response != null) {
-                var jsonResponse = JArray.Parse(response.Content);
+                if (response != null) {
+                    var jsonResponse = JArray.Parse(response.Content);
 
-                if (jsonResponse.Count > 0) {
-                    return new CoordinatesResponse() {
-                        Lat = jsonResponse[0]["lat"].ToString(),
-                        Lng = jsonResponse[0]["lon"].ToString()
-                    };
+                    if (jsonResponse.Count > 0) {
+                        return new CoordinatesResponse() {
+                            Lat = jsonResponse[0]["lat"].ToString(),
+                            Lng = jsonResponse[0]["lon"].ToString()
+                        };
+                    }
                 }
-            }
+            } catch { }
 
             return new CoordinatesResponse();
         }
