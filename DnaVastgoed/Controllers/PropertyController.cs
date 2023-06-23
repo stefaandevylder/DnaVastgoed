@@ -129,7 +129,7 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
 
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+            foreach (DnaProperty property in _propertyRepository.GetAll().Take(5)) {
                 if (property.UploadToImmovlan) {
                     property.UploadToImmovlan = false;
 
@@ -236,7 +236,7 @@ namespace DnaVastgoed.Controllers {
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], false);
 
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+            foreach (DnaProperty property in _propertyRepository.GetAll().Take(5)) {
                 if (property.UploadToSpotto) {
                     property.UploadToSpotto = false;
 
