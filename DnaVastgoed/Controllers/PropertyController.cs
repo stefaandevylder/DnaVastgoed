@@ -129,14 +129,12 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
 
-            foreach (DnaProperty property in _propertyRepository.GetAll().Take(5)) {
-                if (property.UploadToImmovlan) {
-                    property.UploadToImmovlan = false;
+            foreach (DnaProperty property in _propertyRepository.GetAll().Where(p => p.UploadToImmovlan).Take(5)) {
+                property.UploadToImmovlan = false;
 
-                    var result = new DnaImmoVlanProperty(property).Publish(immovlanClient);
-                    logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
-                    propertiesUploaded.Add(property);
-                }
+                var result = new DnaImmoVlanProperty(property).Publish(immovlanClient);
+                logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
+                propertiesUploaded.Add(property);
             }
 
             _propertyRepository.SaveChanges();
@@ -236,14 +234,12 @@ namespace DnaVastgoed.Controllers {
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], false);
 
-            foreach (DnaProperty property in _propertyRepository.GetAll().Take(5)) {
-                if (property.UploadToSpotto) {
-                    property.UploadToSpotto = false;
+            foreach (DnaProperty property in _propertyRepository.GetAll().Where(p => p.UploadToSpotto).Take(5)) {
+                property.UploadToSpotto = false;
 
-                    var result = await new DnaSpottoProperty(property).Publish(spottoClient);
-                    logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
-                    propertiesUploaded.Add(property);
-                }
+                var result = await new DnaSpottoProperty(property).Publish(spottoClient);
+                logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
+                propertiesUploaded.Add(property);
             }
 
             _propertyRepository.SaveChanges();
