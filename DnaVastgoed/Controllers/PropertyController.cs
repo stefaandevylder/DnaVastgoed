@@ -216,7 +216,7 @@ namespace DnaVastgoed.Controllers {
                 logs.Add($"Property {property.Name} suspended.");
             }
 
-            _propertyRepository.RemoveAll();
+            //_propertyRepository.RemoveAll();
             _propertyRepository.SaveChanges();
 
             return Ok(logs);
@@ -416,11 +416,11 @@ namespace DnaVastgoed.Controllers {
                     databaseProperty.GScore = scrapedProperty.GScore;
                     databaseProperty.PScore = scrapedProperty.PScore;
                     
-                    if (!databaseProperty.EqualsImages(scrapedProperty)) {
+                    /*if (!databaseProperty.EqualsImages(scrapedProperty)) {
                         _propertyRepository.RemoveAllImagesFromProperty(databaseProperty.Id);
 
                         databaseProperty.Images = scrapedProperty.Images;
-                    }
+                    }*/
 
                     return $"UPDATED: Property {scrapedProperty.Name}";
                 } else {
