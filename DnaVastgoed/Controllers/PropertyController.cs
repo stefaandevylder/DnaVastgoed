@@ -130,7 +130,7 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
 
             foreach (DnaProperty property in _propertyRepository.GetAll().Where(p => p.UploadToImmovlan).Take(5)) {
-                var result = new DnaImmoVlanProperty(property).Publish(immovlanClient);
+                var result = await new DnaImmoVlanProperty(property).Publish(immovlanClient);
                 logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
                 propertiesUploaded.Add(property);
 
@@ -175,7 +175,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="id">The ID of the property to suspend</param>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("immovlan/suspend")]
-        public ActionResult<IEnumerable<string>> SuspendImmovlanProperty(string apiKey, int id) {
+        public async Task<ActionResult<IEnumerable<string>>> SuspendImmovlanProperty(string apiKey, int id) {
             if (apiKey != Configuration["ApiKey"])
                 return BadRequest("API key is not correct.");
 
@@ -186,7 +186,7 @@ namespace DnaVastgoed.Controllers {
 
             DnaProperty property = _propertyRepository.GetById(id);
 
-            immovlanClient.SuspendProperty(property.Id.ToString());
+            await immovlanClient.SuspendProperty(property.Id.ToString());
             logs.Add($"Property {property.Name} suspended.");
 
             property.UploadToImmovlan = false;
@@ -202,7 +202,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="apiKey">The API admin key</param>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("immovlan/suspend/all")]
-        public ActionResult<IEnumerable<string>> SuspendAllImmovlanProperties(string apiKey) {
+        public async Task<ActionResult<IEnumerable<string>>> SuspendAllImmovlanProperties(string apiKey) {
             if (apiKey != Configuration["ApiKey"])
                 return BadRequest("API key is not correct.");
 
@@ -212,7 +212,7 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
 
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
-                immovlanClient.SuspendProperty(property.Id.ToString());
+                await immovlanClient.SuspendProperty(property.Id.ToString());
                 logs.Add($"Property {property.Name} suspended.");
             }
 
