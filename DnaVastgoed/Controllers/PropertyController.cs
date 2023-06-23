@@ -130,17 +130,17 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
 
             foreach (DnaProperty property in _propertyRepository.GetAll().Where(p => p.UploadToImmovlan).Take(5)) {
-                property.UploadToImmovlan = false;
-
                 var result = new DnaImmoVlanProperty(property).Publish(immovlanClient);
                 logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
                 propertiesUploaded.Add(property);
+
+                property.UploadToImmovlan = false;
             }
 
             _propertyRepository.SaveChanges();
 
             if (propertiesUploaded.Count() > 0) {
-                await _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
+                _ = _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
             }
 
             return Ok(logs);
@@ -235,11 +235,11 @@ namespace DnaVastgoed.Controllers {
             SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], false);
 
             foreach (DnaProperty property in _propertyRepository.GetAll().Where(p => p.UploadToSpotto).Take(5)) {
-                property.UploadToSpotto = false;
-
                 var result = await new DnaSpottoProperty(property).Publish(spottoClient);
                 logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
                 propertiesUploaded.Add(property);
+
+                property.UploadToSpotto = false;
             }
 
             _propertyRepository.SaveChanges();
