@@ -80,7 +80,7 @@ namespace DnaVastgoed.Controllers {
                 logs.Add(logResult);
             }
 
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
 
             return Ok(logs);
         }        
@@ -111,7 +111,7 @@ namespace DnaVastgoed.Controllers {
                 }
             }
 
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
             return Ok(logs);
         }
 
@@ -129,7 +129,9 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
 
-            foreach (DnaProperty property in _propertyRepository.GetAll().Where(p => p.UploadToImmovlan).Take(5)) {
+            IEnumerable<DnaProperty> allPropertiesToUpload = _propertyRepository.GetAll().Where(p => p.UploadToImmovlan);
+
+            foreach (DnaProperty property in allPropertiesToUpload) {
                 var result = await new DnaImmoVlanProperty(property).Publish(immovlanClient);
                 logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
                 propertiesUploaded.Add(property);
@@ -137,7 +139,7 @@ namespace DnaVastgoed.Controllers {
                 property.UploadToImmovlan = false;
             }
 
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
 
             if (propertiesUploaded.Count() > 0) {
                 _ = _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
@@ -152,7 +154,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="apiKey">The API admin key</param>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("immovlan/resetstatus")]
-        public ActionResult<IEnumerable<string>> ResetStatusesImmovlan(string apiKey) {
+        public async Task<ActionResult<IEnumerable<string>>> ResetStatusesImmovlan(string apiKey) {
             if (apiKey != Configuration["ApiKey"])
                 return BadRequest("API key is not correct.");
 
@@ -163,7 +165,7 @@ namespace DnaVastgoed.Controllers {
                 logs.Add($"Status reset for {property.Name}");
             }
 
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
 
             return Ok(logs);
         }
@@ -191,7 +193,7 @@ namespace DnaVastgoed.Controllers {
 
             property.UploadToImmovlan = false;
 
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
 
             return Ok(logs);
         }
@@ -217,7 +219,7 @@ namespace DnaVastgoed.Controllers {
             }
 
             //_propertyRepository.RemoveAll();
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
 
             return Ok(logs);
         }
@@ -234,7 +236,9 @@ namespace DnaVastgoed.Controllers {
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], false);
 
-            foreach (DnaProperty property in _propertyRepository.GetAll().Where(p => p.UploadToSpotto).Take(5)) {
+            IEnumerable<DnaProperty> propertiesToUpload = _propertyRepository.GetAll().Where(p => p.UploadToSpotto);
+
+            foreach (DnaProperty property in propertiesToUpload) {
                 var result = await new DnaSpottoProperty(property).Publish(spottoClient);
                 logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
                 propertiesUploaded.Add(property);
@@ -242,7 +246,7 @@ namespace DnaVastgoed.Controllers {
                 property.UploadToSpotto = false;
             }
 
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
 
             // SEND EMAIL
 
@@ -255,7 +259,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="apiKey">The API admin key</param>
         /// <returns>A log list of what happend during this action (To debug)</returns>
         [HttpGet("spotto/resetstatus")]
-        public ActionResult<IEnumerable<string>> ResetStatusesSpotto(string apiKey) {
+        public async Task<ActionResult<IEnumerable<string>>> ResetStatusesSpotto(string apiKey) {
             if (apiKey != Configuration["ApiKey"])
                 return BadRequest("API key is not correct.");
 
@@ -270,7 +274,7 @@ namespace DnaVastgoed.Controllers {
                 }
             }
 
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
 
             return Ok(logs);
         }
@@ -315,7 +319,7 @@ namespace DnaVastgoed.Controllers {
                 }
             }
 
-            _propertyRepository.SaveChanges();
+            await _propertyRepository.SaveChanges();
 
             return Ok(logs);
         }

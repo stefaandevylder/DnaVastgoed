@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DnaVastgoed.Data.Repositories {
 
@@ -77,8 +78,8 @@ namespace DnaVastgoed.Data.Repositories {
         /// <summary>
         /// Save all changes.
         /// </summary>
-        public void SaveChanges() {
-            _context.SaveChanges();
+        public async Task SaveChanges() {
+            await _context.SaveChangesAsync();
         }
 
     }
