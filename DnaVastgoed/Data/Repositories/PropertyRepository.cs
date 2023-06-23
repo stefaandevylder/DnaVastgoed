@@ -63,7 +63,7 @@ namespace DnaVastgoed.Data.Repositories {
         /// Remove all properties from the database.
         /// </summary>
         public void RemoveAllImagesFromProperty(int propertyId) {
-            var imagesToRemove = _images.Where(i => i.DnaProperty.Id.Equals(propertyId));
+            var imagesToRemove = _properties.FirstOrDefault(p => p.Id == propertyId).Images;
             _images.RemoveRange(imagesToRemove);
         }
 

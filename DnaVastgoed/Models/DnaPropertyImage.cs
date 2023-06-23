@@ -7,7 +7,6 @@ namespace DnaVastgoed.Models {
 
         [Key]
         public int Id { get; set; }
-        public DnaProperty DnaProperty { get; set; }
         public string Url { get; set; }
 
         public DnaPropertyImage() { }
