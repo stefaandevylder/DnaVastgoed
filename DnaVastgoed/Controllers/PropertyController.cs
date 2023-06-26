@@ -4,11 +4,13 @@ using DnaVastgoed.Managers;
 using DnaVastgoed.Models;
 using DnaVastgoed.Network;
 using ImmoVlanAPI;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using SpottoAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -132,8 +134,10 @@ namespace DnaVastgoed.Controllers {
             IEnumerable<DnaProperty> allPropertiesToUpload = _propertyRepository.GetAll().Where(p => p.UploadToImmovlan);
 
             foreach (DnaProperty property in allPropertiesToUpload) {
-                var result = await new DnaImmoVlanProperty(property).Publish(immovlanClient);
-                logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
+                DnaImmoVlanProperty imovlanProperty = new DnaImmoVlanProperty(property);
+
+                RestResponse result = await imovlanProperty.Publish(immovlanClient);
+                logs.Add($"UPLOADED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
                 propertiesUploaded.Add(property);
 
                 property.UploadToImmovlan = false;
@@ -141,7 +145,7 @@ namespace DnaVastgoed.Controllers {
 
             await _propertyRepository.SaveChanges();
 
-            if (propertiesUploaded.Count() > 0) {
+            if (propertiesUploaded.Count > 0) {
                 _ = _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
             }
 
@@ -216,9 +220,10 @@ namespace DnaVastgoed.Controllers {
             foreach (DnaProperty property in _propertyRepository.GetAll()) {
                 await immovlanClient.SuspendProperty(property.Id.ToString());
                 logs.Add($"Property {property.Name} suspended.");
+
+                property.UploadToImmovlan = true;
             }
 
-            //_propertyRepository.RemoveAll();
             await _propertyRepository.SaveChanges();
 
             return Ok(logs);
@@ -239,8 +244,10 @@ namespace DnaVastgoed.Controllers {
             IEnumerable<DnaProperty> propertiesToUpload = _propertyRepository.GetAll().Where(p => p.UploadToSpotto);
 
             foreach (DnaProperty property in propertiesToUpload) {
-                var result = await new DnaSpottoProperty(property).Publish(spottoClient);
-                logs.Add($"UPLOADED: {property.Name} ({property.Images.Count()} images) with result {result.Content}");
+                DnaSpottoProperty spottoProperty = new DnaSpottoProperty(property);
+
+                var result = await spottoProperty.Publish(spottoClient);
+                logs.Add($"UPLOADED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
                 propertiesUploaded.Add(property);
 
                 property.UploadToSpotto = false;
