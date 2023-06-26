@@ -126,7 +126,6 @@ namespace DnaVastgoed.Controllers {
         [HttpGet("immovlan")]
         public async Task<ActionResult<IEnumerable<string>>> UploadToImmovlan() {
             ICollection<string> logs = new List<string>();
-            ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
@@ -138,15 +137,14 @@ namespace DnaVastgoed.Controllers {
 
                 RestResponse result = await imovlanProperty.Publish(immovlanClient);
                 logs.Add($"UPLOADED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
-                propertiesUploaded.Add(property);
 
                 property.UploadToImmovlan = false;
             }
 
             await _propertyRepository.SaveChanges();
 
-            if (propertiesUploaded.Count > 0) {
-                _ = _postmarkManager.sendUploadedImmoVlan(propertiesUploaded);
+            if (allPropertiesToUpload.Count() > 0) {
+                _ = _postmarkManager.sendUploadedImmoVlan(allPropertiesToUpload);
             }
 
             return Ok(logs);
@@ -238,7 +236,6 @@ namespace DnaVastgoed.Controllers {
         [HttpGet("spotto")]
         public async Task<ActionResult<IEnumerable<string>>> UploadToSpotto() {
             ICollection<string> logs = new List<string>();
-            ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], false);
 
             IEnumerable<DnaProperty> propertiesToUpload = _propertyRepository.GetAll().Where(p => p.UploadToSpotto);
@@ -248,7 +245,6 @@ namespace DnaVastgoed.Controllers {
 
                 var result = await spottoProperty.Publish(spottoClient);
                 logs.Add($"UPLOADED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
-                propertiesUploaded.Add(property);
 
                 property.UploadToSpotto = false;
             }
