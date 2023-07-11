@@ -121,7 +121,7 @@ namespace DnaVastgoed.Network {
             foreach (var item in images.Select((value, i) => new { i, value })) {
                 string imageUrl = item.value.Url;
 
-                pictures.Add(new Picture(item.i, EncodeImage(imageUrl)));
+                pictures.Add(new Picture(item.i + 1, EncodeImage(imageUrl)));
             }
 
             return pictures.ToArray();
