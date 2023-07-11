@@ -118,10 +118,10 @@ namespace DnaVastgoed.Network {
             ICollection<Picture> pictures = new List<Picture>();
             var images = _prop.Images.Take(25);
 
-            foreach (DnaPropertyImage image in images) {
-                string imageUrl = image.Url;
+            foreach (var item in images.Select((value, i) => new { i, value })) {
+                string imageUrl = item.value.Url;
 
-                pictures.Add(new Picture(image.Id, EncodeImage(imageUrl)));
+                pictures.Add(new Picture(item.i, EncodeImage(imageUrl)));
             }
 
             return pictures.ToArray();
