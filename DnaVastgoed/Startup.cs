@@ -44,9 +44,7 @@ namespace DnaVastgoed {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            if (env.IsDevelopment()) {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseDeveloperExceptionPage();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "DnaVastgoed v1"));
 

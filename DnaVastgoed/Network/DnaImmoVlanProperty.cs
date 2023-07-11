@@ -116,13 +116,12 @@ namespace DnaVastgoed.Network {
         /// <returns>An array of picture objects</returns>
         private Picture[] GetPictures() {
             ICollection<Picture> pictures = new List<Picture>();
+            var images = _prop.Images.Take(25);
 
-            for (int i = 0; i < _prop.Images.Count(); i++) {
-                if (i < 31) {
-                    string imageUrl = _prop.Images.ToArray()[i].Url;
+            foreach (DnaPropertyImage image in images) {
+                string imageUrl = image.Url;
 
-                    pictures.Add(new Picture(i + 1, EncodeImage(imageUrl)));
-                }
+                pictures.Add(new Picture(image.Id, EncodeImage(imageUrl)));
             }
 
             return pictures.ToArray();

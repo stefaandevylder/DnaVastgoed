@@ -48,11 +48,11 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <returns>A list of DnaProperty objects</returns>
         [HttpGet]
-        public ActionResult<IEnumerable<DnaProperty>> GetProperties(int? id = null) {
+        public async Task<ActionResult<IEnumerable<DnaProperty>>> GetProperties(int? id = null) {
             if (!id.HasValue)
-                return Ok(_propertyRepository.GetAll());
+                return Ok(await _propertyRepository.GetAll());
 
-            return Ok(_propertyRepository.GetById(id.Value));
+            return Ok(await _propertyRepository.GetById(id.Value));
         }
 
         /// <summary>
