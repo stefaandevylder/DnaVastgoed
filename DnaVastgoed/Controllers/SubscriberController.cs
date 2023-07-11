@@ -3,6 +3,7 @@ using DnaVastgoed.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DnaVastgoed.Controllers {
 
@@ -21,9 +22,9 @@ namespace DnaVastgoed.Controllers {
         /// </summary>
         /// <returns>Public basic subscriber information</returns>
         [HttpGet]
-        public ActionResult<string> GetInformation() {
-            int activeSubscribers = _subscriberRepository.GetAllActive().Count();
-            return Ok($"There are {activeSubscribers} active subscribers.");
+        public async Task<ActionResult<string>> GetInformation() {
+            var activeSubscribers = await _subscriberRepository.GetAllActive();
+            return Ok($"There are {activeSubscribers.Count()} active subscribers.");
         }
 
         /// <summary>
@@ -51,8 +52,8 @@ namespace DnaVastgoed.Controllers {
         /// <param name="webhook">The webhook event</param>
         /// <returns>The status</returns>
         [HttpPost("delete")]
-        public ActionResult<string> RemoveSubscriber(PostmarkWebhook webhook) {
-            Subscriber subscriber = _subscriberRepository.Get(webhook.Recipient);
+        public async Task<ActionResult<string>> RemoveSubscriber(PostmarkWebhook webhook) {
+            Subscriber subscriber = await _subscriberRepository.Get(webhook.Recipient);
 
             if (subscriber == null)
                 return NotFound();

@@ -23,8 +23,8 @@ namespace DnaVastgoed.Data.Repositories {
         /// </summary>
         /// <param name="id">The property id</param>
         /// <returns>The found property object or null</returns>
-        public DnaProperty GetById(int id) {
-            return _properties.FirstOrDefault(p => p.Id == id);
+        public async Task<DnaProperty> GetById(int id) {
+            return await _properties.FirstOrDefaultAsync(p => p.Id == id);
         }
 
         /// <summary>
@@ -32,24 +32,24 @@ namespace DnaVastgoed.Data.Repositories {
         /// </summary>
         /// <param name="url">The property url</param>
         /// <returns>The found property object or null</returns>
-        public DnaProperty GetByURL(string url) {
-            return _properties.FirstOrDefault(p => p.URL == url);
+        public async Task<DnaProperty> GetByURL(string url) {
+            return await _properties.FirstOrDefaultAsync(p => p.URL == url);
         }
 
         /// <summary>
         /// Get a list of all properties.
         /// </summary>
         /// <returns>An enumerable of all properties</returns>
-        public IEnumerable<DnaProperty> GetAll() {
-            return _properties.Include(p => p.Images);
+        public async Task<IEnumerable<DnaProperty>> GetAll() {
+            return await _properties.Include(p => p.Images).ToListAsync();
         }
 
         /// <summary>
         /// Add a new property to the database.
         /// </summary>
         /// <param name="property">The property to add</param>
-        public void Add(DnaProperty property) {
-            _properties.Add(property);
+        public async void Add(DnaProperty property) {
+            await _properties.AddAsync(property);
         }
 
         /// <summary>
@@ -71,8 +71,9 @@ namespace DnaVastgoed.Data.Repositories {
         /// <summary>
         /// Remove all properties from the database.
         /// </summary>
-        public void RemoveAll() {
-            _properties.RemoveRange(GetAll());
+        public async void RemoveAll() {
+            var propertiesToRemove = await GetAll();
+            _properties.RemoveRange(propertiesToRemove);
         }
 
         /// <summary>

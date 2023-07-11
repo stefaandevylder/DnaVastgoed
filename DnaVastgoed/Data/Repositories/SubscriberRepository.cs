@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DnaVastgoed.Data.Repositories {
 
@@ -20,31 +21,31 @@ namespace DnaVastgoed.Data.Repositories {
         /// </summary>
         /// <param name="email">The email to search for</param>
         /// <returns>A subscriber object</returns>
-        public Subscriber Get(string email) {
-            return _subscribers.FirstOrDefault(s => s.Email.ToLower().Trim() == email.ToLower().Trim());
+        public async Task<Subscriber> Get(string email) {
+            return await _subscribers.FirstOrDefaultAsync(s => s.Email.ToLower().Trim() == email.ToLower().Trim());
         }
 
         /// <summary>
         /// Get all active subscribers.
         /// </summary>
         /// <returns>An enumerable of all subscriber objects</returns>
-        public IEnumerable<Subscriber> GetAllActive() {
-            return _subscribers.Where(s => s.Suppressed == null).ToList();
+        public async Task<IEnumerable<Subscriber>> GetAllActive() {
+            return await _subscribers.Where(s => s.Suppressed == null).ToListAsync();
         }
 
         /// <summary>
         /// Add a new subscriber to the database.
         /// </summary>
         /// <param name="subscriber">The subscriber object to add</param>
-        public void Add(Subscriber subscriber) {
-            _subscribers.Add(subscriber);
+        public async void Add(Subscriber subscriber) {
+            await _subscribers.AddAsync(subscriber);
         }
 
         /// <summary>
         /// Save all changes.
         /// </summary>
-        public void SaveChanges() {
-            _context.SaveChanges();
+        public async void SaveChanges() {
+            await _context.SaveChangesAsync();
         }
 
     }

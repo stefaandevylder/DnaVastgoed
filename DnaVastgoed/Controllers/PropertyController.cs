@@ -96,8 +96,9 @@ namespace DnaVastgoed.Controllers {
                 return BadRequest("API key is not correct.");
 
             ICollection<string> logs = new List<string>();
+            IEnumerable<DnaProperty> properties = await _propertyRepository.GetAll();
 
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+            foreach (DnaProperty property in properties) {
                 if (string.IsNullOrWhiteSpace(property.CoordinatesLng) || string.IsNullOrWhiteSpace(property.CoordinatesLat)) {
                     var coordinates = await _coordinatesManager.GetCoordinatesFromAddress(property.Location);
                     property.CoordinatesLat = coordinates.Lat;
@@ -129,7 +130,8 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
 
-            IEnumerable<DnaProperty> allPropertiesToUpload = _propertyRepository.GetAll().Where(p => p.UploadToImmovlan);
+            IEnumerable<DnaProperty> allPropertiesToUpload = await _propertyRepository.GetAll();
+            allPropertiesToUpload = allPropertiesToUpload.Where(p => p.UploadToImmovlan);
 
             foreach (DnaProperty property in allPropertiesToUpload) {
                 var result = await new DnaImmoVlanProperty(property).Publish(immovlanClient);
@@ -159,8 +161,9 @@ namespace DnaVastgoed.Controllers {
                 return BadRequest("API key is not correct.");
 
             ICollection<string> logs = new List<string>();
+            IEnumerable<DnaProperty> properties = await _propertyRepository.GetAll();
 
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+            foreach (DnaProperty property in properties) {
                 property.UploadToImmovlan = true;
                 logs.Add($"Status reset for {property.Name}");
             }
@@ -186,7 +189,7 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
 
-            DnaProperty property = _propertyRepository.GetById(id);
+            DnaProperty property = await _propertyRepository.GetById(id);
 
             await immovlanClient.SuspendProperty(property.Id.ToString());
             logs.Add($"Property {property.Name} suspended.");
@@ -212,8 +215,9 @@ namespace DnaVastgoed.Controllers {
             ImmoVlanClient immovlanClient = new ImmoVlanClient(Configuration["ImmoVlan:BusinessEmail"],
                 Configuration["ImmoVlan:TechincalEmail"], int.Parse(Configuration["ImmoVlan:SoftwareId"]),
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"]);
+            IEnumerable<DnaProperty> properties = await _propertyRepository.GetAll();
 
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+            foreach (DnaProperty property in properties) {
                 await immovlanClient.SuspendProperty(property.Id.ToString());
                 logs.Add($"Property {property.Name} suspended.");
             }
@@ -236,7 +240,8 @@ namespace DnaVastgoed.Controllers {
             ICollection<DnaProperty> propertiesUploaded = new List<DnaProperty>();
             SpottoClient spottoClient = new SpottoClient(Configuration["Spotto:SubscriptionKey"], Configuration["Spotto:PartnerId"], false);
 
-            IEnumerable<DnaProperty> propertiesToUpload = _propertyRepository.GetAll().Where(p => p.UploadToSpotto);
+            IEnumerable<DnaProperty> propertiesToUpload = await _propertyRepository.GetAll();
+            propertiesToUpload = propertiesToUpload.Where(p => p.UploadToSpotto);
 
             foreach (DnaProperty property in propertiesToUpload) {
                 var result = await new DnaSpottoProperty(property).Publish(spottoClient);
@@ -264,8 +269,9 @@ namespace DnaVastgoed.Controllers {
                 return BadRequest("API key is not correct.");
 
             ICollection<string> logs = new List<string>();
+            IEnumerable<DnaProperty> properties = await _propertyRepository.GetAll();
 
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+            foreach (DnaProperty property in properties) {
                 if (property.Price != null || property.Status != "Realisatie") {
                     property.UploadToSpotto = true;
                     logs.Add($"Status reset for {property.Name}");
@@ -290,9 +296,10 @@ namespace DnaVastgoed.Controllers {
         [HttpGet("mail")]
         public async Task<ActionResult<IEnumerable<string>>> SendNewPropertiesMail() {
             ICollection<string> logs = new List<string>();
-            IEnumerable<Subscriber> subscribers = _subscriberRepository.GetAllActive();
+            IEnumerable<Subscriber> subscribers = await _subscriberRepository.GetAllActive();
+            IEnumerable<DnaProperty> properties = await _propertyRepository.GetAll();
 
-            foreach (DnaProperty property in _propertyRepository.GetAll()) {
+            foreach (DnaProperty property in properties) {
                 if (property.SendToSubscribers) {
                     property.SendToSubscribers = false;
 
@@ -365,7 +372,7 @@ namespace DnaVastgoed.Controllers {
         /// <param name="property">The property to insert</param>
         /// <returns>The content of the result</returns>
         private async Task<string> AddOrUpdateProperty(DnaProperty scrapedProperty) {
-            DnaProperty databaseProperty = _propertyRepository.GetByURL(scrapedProperty.URL);
+            DnaProperty databaseProperty = await _propertyRepository.GetByURL(scrapedProperty.URL);
 
             if (databaseProperty == null) {
                 if (scrapedProperty.Price != null) {
