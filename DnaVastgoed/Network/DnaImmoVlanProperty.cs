@@ -23,7 +23,7 @@ namespace DnaVastgoed.Network {
         /// </summary>
         /// <param name="client">The Immovlan client</param>
         /// <returns>The response</returns>
-        public Task<RestResponse> Publish(ImmoVlanClient client) {
+        public async Task<RestResponse> Publish(ImmoVlanClient client) {
             Property prop = new Property(_prop.Id.ToString(), _prop.Id.ToString(), GetCommercialStatus(),
                 new Classification(GetTransactionType(), GetPropertyType()),
                 new Location(new Address(_prop.GetLocation()[2], _prop.GetLocation()[0], _prop.GetLocation()[1], null, _prop.GetLocation()[3])) {
@@ -45,7 +45,7 @@ namespace DnaVastgoed.Network {
                 }
             };
 
-            return client.PublishProperty(prop);
+            return await client.PublishProperty(prop);
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace DnaVastgoed.Network {
         /// </summary>
         /// <param name="client">The Immovlan client</param>
         /// <returns>The response</returns>
-        public Task<RestResponse> Suspend(ImmoVlanClient client, string softwareId) {
-            return client.SuspendProperty(softwareId);
+        public async Task<RestResponse> Suspend(ImmoVlanClient client, string softwareId) {
+            return await client.SuspendProperty(softwareId);
         }
 
         /// <summary>
