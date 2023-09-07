@@ -120,8 +120,11 @@ namespace DnaVastgoed.Network {
 
             foreach (var item in images.Select((value, i) => new { i, value })) {
                 string imageUrl = item.value.Url;
+                string encodedImage = EncodeImage(imageUrl);
 
-                pictures.Add(new Picture(item.i + 1, EncodeImage(imageUrl)));
+                if (encodedImage != null) {
+                    pictures.Add(new Picture(item.i + 1, encodedImage));
+                }
             }
 
             return pictures.ToArray();
@@ -133,10 +136,14 @@ namespace DnaVastgoed.Network {
         /// <param name="imageUrl">The url we need to encode</param>
         /// <returns>A base64 in string form</returns>
         private string EncodeImage(string imageUrl) {
-            using WebClient webClient = new WebClient();
-            byte[] data = webClient.DownloadData(imageUrl);
+            try {
+                using WebClient webClient = new WebClient();
+                byte[] data = webClient.DownloadData(imageUrl);
 
-            return Convert.ToBase64String(data);
+                return Convert.ToBase64String(data);
+            } catch {
+                return null;
+            }
         }
 
     }
