@@ -430,11 +430,11 @@ namespace DnaVastgoed.Controllers {
                     databaseProperty.GScore = scrapedProperty.GScore;
                     databaseProperty.PScore = scrapedProperty.PScore;
                     
-                    /*if (!databaseProperty.EqualsImages(scrapedProperty)) {
+                    if (!databaseProperty.EqualsImages(scrapedProperty)) {
                         _propertyRepository.RemoveAllImagesFromProperty(databaseProperty.Id);
 
                         databaseProperty.Images = scrapedProperty.Images;
-                    }*/
+                    }
 
                     return $"UPDATED: Property {scrapedProperty.Name}";
                 } else {
