@@ -246,12 +246,17 @@ namespace DnaVastgoed.Controllers {
             propertiesToUpload = propertiesToUpload.Where(p => p.UploadToSpotto);
 
             foreach (DnaProperty property in propertiesToUpload) {
-                DnaSpottoProperty spottoProperty = new DnaSpottoProperty(property);
+                try {
+                    DnaSpottoProperty spottoProperty = new DnaSpottoProperty(property);
 
-                var result = await spottoProperty.Publish(spottoClient);
-                logs.Add($"UPLOADED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
+                    var result = await spottoProperty.Publish(spottoClient);
+                    logs.Add($"UPLOADED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
 
-                property.UploadToSpotto = false;
+                    property.UploadToSpotto = false;
+                } catch (Exception e) {
+                    logs.Add($"ERROR: {e.Message}");
+                    continue;
+                }
             }
 
             await _propertyRepository.SaveChanges();
