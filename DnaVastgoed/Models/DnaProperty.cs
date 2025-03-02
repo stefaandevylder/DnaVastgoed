@@ -18,6 +18,7 @@ namespace DnaVastgoed.Models {
 
         // Statuses
         public bool UploadToImmovlan { get; set; }
+        public bool IsImmovlanSuspended { get; set; }
         public bool UploadToSpotto { get; set; }
         public bool SendToSubscribers { get; set; }
 

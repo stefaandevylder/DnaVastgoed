@@ -132,7 +132,7 @@ namespace DnaVastgoed.Controllers {
                 Configuration["ImmoVlan:ProCustomerId"], Configuration["ImmoVlan:SoftwarePassword"], false);
 
             IEnumerable<DnaProperty> allPropertiesToUpload = await _propertyRepository.GetAll();
-            allPropertiesToUpload = allPropertiesToUpload.Where(p => p.UploadToImmovlan);
+            allPropertiesToUpload = allPropertiesToUpload.Where(p => p.UploadToImmovlan && !p.IsImmovlanSuspended);
 
             foreach (DnaProperty property in allPropertiesToUpload) {
                 DnaImmoVlanProperty imovlanProperty = new DnaImmoVlanProperty(property);
@@ -197,6 +197,7 @@ namespace DnaVastgoed.Controllers {
             logs.Add($"Property {property.Name} suspended.");
 
             property.UploadToImmovlan = false;
+            property.IsImmovlanSuspended = true;
 
             await _propertyRepository.SaveChanges();
 

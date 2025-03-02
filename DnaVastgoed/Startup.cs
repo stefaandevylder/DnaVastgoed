@@ -4,9 +4,9 @@ using DnaVastgoed.Managers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 namespace DnaVastgoed {
@@ -29,7 +29,7 @@ namespace DnaVastgoed {
             });
 
             ApplicationDbContext applicationDbContext = new ApplicationDbContext();
-            applicationDbContext.Database.EnsureCreated();
+            applicationDbContext.Database.Migrate();
 
             services.AddScoped(x => new PropertyRepository(applicationDbContext));
             services.AddScoped(x => new SubscriberRepository(applicationDbContext));
