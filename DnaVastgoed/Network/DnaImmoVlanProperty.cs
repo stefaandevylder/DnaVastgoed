@@ -12,10 +12,10 @@ namespace DnaVastgoed.Network {
 
     public class DnaImmoVlanProperty {
 
-        private readonly DnaProperty _prop;
+        public readonly DnaProperty Property;
 
         public DnaImmoVlanProperty(DnaProperty prop) {
-            _prop = prop;
+            Property = prop;
         }
 
         /// <summary>
@@ -24,13 +24,13 @@ namespace DnaVastgoed.Network {
         /// <param name="client">The Immovlan client</param>
         /// <returns>The response</returns>
         public async Task<RestResponse> Publish(ImmoVlanClient client) {
-            Property prop = new Property(_prop.Id.ToString(), _prop.Id.ToString(), GetCommercialStatus(),
+            Property prop = new Property(Property.Id.ToString(), Property.Id.ToString(), GetCommercialStatus(),
                 new Classification(GetTransactionType(), GetPropertyType()),
-                new Location(new Address(_prop.GetLocation()[2], _prop.GetLocation()[0], _prop.GetLocation()[1], null, _prop.GetLocation()[3])) {
+                new Location(new Address(Property.GetLocation()[2], Property.GetLocation()[0], Property.GetLocation()[1], null, Property.GetLocation()[3])) {
                     IsAddressDisplayed = true
                 },
-                new Description(_prop.Description, _prop.Description),
-                new FinancialDetails(_prop.GetPrice(), PriceType.AskedPrice)) {
+                new Description(Property.Description, Property.Description),
+                new FinancialDetails(Property.GetPrice(), PriceType.AskedPrice)) {
                 GeneralInformation = new GeneralInformation() {
                     ContactEmail = "info@dnavastgoed.be",
                     ContactPhone = "037761922"
@@ -62,9 +62,9 @@ namespace DnaVastgoed.Network {
         /// </summary>
         /// <returns>The correct status</returns>
         private CommercialStatus GetCommercialStatus() {
-            return _prop.Status.Contains("Verkocht") 
-                || _prop.Status.Contains("Verhuurd") 
-                || _prop.Status.Contains("Realisatie") ? CommercialStatus.SOLD : CommercialStatus.ONLINE;
+            return Property.Status.Contains("Verkocht") 
+                || Property.Status.Contains("Verhuurd") 
+                || Property.Status.Contains("Realisatie") ? CommercialStatus.SOLD : CommercialStatus.ONLINE;
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace DnaVastgoed.Network {
         /// </summary>
         /// <returns>An ImmoVlan transaction type</returns>
         private TransactionType GetTransactionType() {
-            return _prop.Status.Contains("Te Koop") || _prop.Status.Contains("Verkocht") ? TransactionType.SALE : TransactionType.RENT;
+            return Property.Status.Contains("Te Koop") || Property.Status.Contains("Verkocht") ? TransactionType.SALE : TransactionType.RENT;
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace DnaVastgoed.Network {
         /// </summary>
         /// <returns>An ImmoVlan property type</returns>
         private PropertyType GetPropertyType() {
-            switch (_prop.Type) {
+            switch (Property.Type) {
                 case "Woning": return PropertyType.Residence;
                 case "Huis": return PropertyType.Residence;
                 case "Appartement": return PropertyType.FlatApartment;
@@ -99,9 +99,9 @@ namespace DnaVastgoed.Network {
         /// Gets the energy score.
         /// </summary>
         private int? GetEnergy() {
-            if (!string.IsNullOrWhiteSpace(_prop.Energy)) {
+            if (!string.IsNullOrWhiteSpace(Property.Energy)) {
                 try {
-                    return int.Parse(_prop.Energy.Split(" ")[0]);
+                    return int.Parse(Property.Energy.Split(" ")[0]);
                 } catch {
                     return 0;
                 }
@@ -116,7 +116,7 @@ namespace DnaVastgoed.Network {
         /// <returns>An array of picture objects</returns>
         private Picture[] GetPictures() {
             ICollection<Picture> pictures = new List<Picture>();
-            var images = _prop.Images.Take(25);
+            var images = Property.Images.Take(25);
 
             foreach (var item in images.Select((value, i) => new { i, value })) {
                 string imageUrl = item.value.Url;

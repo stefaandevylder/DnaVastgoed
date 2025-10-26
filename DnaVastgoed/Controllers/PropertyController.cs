@@ -137,8 +137,15 @@ namespace DnaVastgoed.Controllers {
             foreach (DnaProperty property in allPropertiesToUpload) {
                 DnaImmoVlanProperty imovlanProperty = new DnaImmoVlanProperty(property);
 
-                RestResponse result = await imovlanProperty.Publish(immovlanClient);
-                logs.Add($"UPLOADED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
+                if (imovlanProperty.Property.Status.Contains("Realisatie")) {
+                    RestResponse result = await imovlanProperty.Suspend(immovlanClient, imovlanProperty.Property.Id.ToString());
+                    logs.Add($"SUSPENDED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
+                    property.IsImmovlanSuspended = true;
+                } else {
+                    RestResponse result = await imovlanProperty.Publish(immovlanClient);
+                    logs.Add($"UPLOADED: {property.Name} ({property.Images.Count} images) with result {result.Content}");
+
+                }
 
                 property.UploadToImmovlan = false;
             }
